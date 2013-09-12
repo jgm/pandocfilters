@@ -1,7 +1,12 @@
 from distutils.core import setup
+
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
 setup(name='pandocfilters',
       version='1.0',
       description='Utilities for writing pandoc filters in python',
+      long_description=read('README.rst'),
       author='John MacFarlane',
       author_email='fiddlosopher@gmail.com',
       url='http://github.com/jgm/pandocfilters',
