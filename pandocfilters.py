@@ -66,6 +66,9 @@ def toJSONFilter(action):
   json.dump(altered, sys.stdout)
 
 def stringify(x):
+  """Walks the tree x and returns concatenated string content,
+  leaving out all formatting.
+  """
   result = []
   def go(key, val, format, meta):
     if key == 'Str':
