@@ -1,4 +1,3 @@
-=============
 pandocfilters
 =============
 
@@ -55,7 +54,7 @@ The ``pandocfilters`` module exports the following functions:
   Returns an attribute list, constructed from the
   dictionary ``attrs``.
 
-Most users will only need ``toJSONFilter`.  Here is a simple example
+Most users will only need ``toJSONFilter``.  Here is a simple example
 of its use:::
 
     #!/usr/bin/env python
