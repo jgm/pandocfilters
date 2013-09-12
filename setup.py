@@ -6,4 +6,15 @@ setup(name='pandocfilters',
       author_email='fiddlosopher@gmail.com',
       url='http://github.com/jgm/pandocfilters',
       py_modules=['pandocfilters'],
+      keywords=['pandoc'],
+      classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Environment :: Console',
+        'Intended Audience :: End Users/Desktop',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Topic :: Text Processing :: Filters'
+        ],
       )
