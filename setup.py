@@ -4,6 +4,6 @@ setup(name='pandocfilters',
       description='Utilities for writing pandoc filters in python',
       author='John MacFarlane',
       author_email='fiddlosopher@gmail.com',
-      url='http://github.com/jgm/pandoc-filters-python',
+      url='http://github.com/jgm/pandocfilters',
       py_modules=['pandocfilters'],
       )
