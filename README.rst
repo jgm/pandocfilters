@@ -12,7 +12,7 @@ or using the ``--filter`` (or ``-F``) command-line option:::
 
     pandoc --filter ./caps.py -s
 
-For more on pandoc filters, see the pandoc documentation under `--filter`
+For more on pandoc filters, see the pandoc documentation under ``--filter``
 and `the tutorial on writing filters`__.
 
 __ http://johnmacfarlane.net/pandoc/scripting.html
