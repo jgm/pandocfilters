@@ -1,0 +1,6 @@
+Notes on uploading this package to PyPI
+
+python setup.py register
+python setup.py sdist upload
+
+In upload step, can also use --sign to sign with GPG.
