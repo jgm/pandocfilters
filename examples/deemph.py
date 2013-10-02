@@ -9,7 +9,7 @@ in ALL CAPS.
 
 def deemph(key, val, fmt, meta):
   if key == 'Emph':
-    return walk(val, caps, fmt)
+    return walk(val, caps, fmt, meta)
 
 if __name__ == "__main__":
   toJSONFilter(deemph)
