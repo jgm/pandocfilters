@@ -9,7 +9,7 @@ convert are in the path.  Images are put in the abc-images directory.
 import hashlib
 import os
 import sys
-from pandocfilters import toJSONFilter
+from pandocfilters import toJSONFilter, Para, Image
 from subprocess import Popen, PIPE, call
 
 imagedir = "abc-images"
@@ -44,7 +44,7 @@ def abc(key, value, format, meta):
           pass
         abc2eps(code, filetype, outfile)
         sys.stderr.write('Created image ' + src + '\n')
-      return {'Para': [{'Image': [[], [src,""]]}]}
+      return Para([Image([], [src,""]))
 
 if __name__ == "__main__":
   toJSONFilter(abc)

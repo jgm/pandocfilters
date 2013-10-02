@@ -9,7 +9,7 @@ import pygraphviz
 import hashlib
 import os
 import sys
-from pandocfilters import toJSONFilter
+from pandocfilters import toJSONFilter, Str, Para, Image
 
 def sha1(x):
   return hashlib.sha1(x).hexdigest()
@@ -30,7 +30,7 @@ def graphviz(key, value, format, meta):
         filetype = "pdf"
       else:
         filetype = "png"
-      alt = [{'Str': caption}]
+      alt = Str(caption)
       src = imagedir + '/' + filename + '.' + filetype
       if not os.path.isfile(src):
         try:
@@ -41,7 +41,7 @@ def graphviz(key, value, format, meta):
         G.draw(src)
         sys.stderr.write('Created image ' + src + '\n')
       tit = ""
-      return {'Para': [{'Image': [alt, [src,tit]]}]}
+      return Para([Image(alt, [src,tit])])
 
 if __name__ == "__main__":
   toJSONFilter(graphviz)
