@@ -143,3 +143,42 @@ Link = elt('Link',2)
 Image = elt('Image',2)
 Note = elt('Note',1)
 Span = elt('Span',2)
+
+class Inline:
+  def __init__(self, value):
+    self.value = value
+
+class Block:
+  def __init__(self, value):
+    self.value = value
+
+class Str(Inline):
+  def toJSON(self):
+    return {'Str': self.value}
+
+class PandocJSONEncoder(json.JSONEncoder):
+  def default(self, obj):
+    if isinstance(obj, Inline):
+      return obj.toJSON()
+    elif isinstance(obj, Block):
+      return obj.toJSON()
+    else:
+      return json.JSONEncoder.default(self, obj)
+
+def encode(s):
+  return json.dumps(s, cls = PandocJSONEncoder)
+
+def fromJSON(obj):
+  keys = obj.keys()
+  if len(keys) == 1:
+    key = keys[0]
+    if key == 'Str':
+      return Str(obj[key])
+    else:
+      raise "unimplemented"
+  else:
+    return dict(pairs)
+
+def decode(obj):
+  return json.loads(obj, object_hook = fromJSON)
+
