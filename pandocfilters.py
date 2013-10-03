@@ -144,17 +144,34 @@ Image = elt('Image',2)
 Note = elt('Note',1)
 Span = elt('Span',2)
 
-class Inline:
+class PandocElement:
   def __init__(self, value):
     self.value = value
+  def walk(self, f):
+    pass
 
-class Block:
-  def __init__(self, value):
-    self.value = value
+class Inline(PandocElement):
+  pass
+
+class Block(PandocElement):
+  pass
 
 class Str(Inline):
   def toJSON(self):
     return {'Str': self.value}
+
+class Emph(Inline):
+  def toJSON(self):
+    return {'Emph': self.value}
+  def walk(self, f):
+    newvalue = []
+    for x in self.value:
+      y = f(x.walk(f))
+      if isinstance(y, list):
+        newvalue = newvalue + y
+      elif isinstance(y, Inline):
+        newvalue = newvalue.append(y)
+    self.value = newvalue
 
 class PandocJSONEncoder(json.JSONEncoder):
   def default(self, obj):
@@ -172,8 +189,11 @@ def fromJSON(obj):
   keys = obj.keys()
   if len(keys) == 1:
     key = keys[0]
+    val = obj[key]
     if key == 'Str':
-      return Str(obj[key])
+      return Str(val)
+    elif key == 'Emph':
+      return Emph(val)
     else:
       raise "unimplemented"
   else:
