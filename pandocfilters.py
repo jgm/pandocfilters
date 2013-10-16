@@ -17,19 +17,15 @@ def walk(x, action, format, meta):
   if isinstance(x, list):
     array = []
     for item in x:
-      if isinstance(item, dict):
-        if item == {}:
+      if isinstance(item, dict) and 'tag' in item:
+        res = action(item['tag'], item['val'], format, meta)
+        if res is None:
           array.append(walk(item, action, format, meta))
+        elif isinstance(res, list):
+          for z in res:
+            array.append(walk(z, action, format, meta))
         else:
-          for k in item:
-            res = action(k, item[k], format, meta)
-            if res is None:
-              array.append(walk(item, action, format, meta))
-            elif isinstance(res, list):
-              for z in res:
-                array.append(walk(z, action, format, meta))
-            else:
-              array.append(walk(res, action, format, meta))
+          array.append(walk(res, action, format, meta))
       else:
         array.append(walk(item, action, format, meta))
     return array
@@ -104,7 +100,7 @@ def elt(eltType, numargs):
       xs = args[0]
     else:
       xs = args
-    return dict([(eltType, xs)])
+    return {'tag': eltType, 'val': xs}
   return fun
 
 # Constructors for block elements
