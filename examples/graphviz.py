@@ -41,7 +41,7 @@ def graphviz(key, value, format, meta):
         G.draw(src)
         sys.stderr.write('Created image ' + src + '\n')
       tit = ""
-      return Para([Image(alt, [src,tit])])
+      return Para([Image([alt], [src,tit])])
 
 if __name__ == "__main__":
   toJSONFilter(graphviz)
