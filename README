@@ -21,9 +21,6 @@ To install::
 
     python setup.py install
 
-The source repository contains a number of illustrative examples
-in the ``examples`` subdirectory.
-
 The ``pandocfilters`` module exports the following functions:
 
 ``walk(x, action, format, meta)``
@@ -72,4 +69,71 @@ of its use:::
 
     if __name__ == "__main__":
       toJSONFilter(caps)
+
+Examples
+--------
+
+The examples subdirectory in the source repository contains the
+following filters. These filters should provide a useful starting point
+for developing your own pandocfilters.
+
+-   abc.py
+
+    Pandoc filter to process code blocks with class "abc" containing ABC
+    notation into images. Assumes that abcm2ps and ImageMagick's convert
+    are in the path. Images are put in the abc-images directory.
+
+-   caps.py
+
+    Pandoc filter to convert all regular text to uppercase. Code, link
+    URLs, etc. are not affected.
+
+-   comments.py
+
+    Pandoc filter that causes everything between
+    '<!-- BEGIN COMMENT -->' and '<!-- END COMMENT -->' to be ignored.
+    The comment lines must appear on lines by themselves, with blank
+    lines surrounding
+
+-   deemph.py
+
+    Pandoc filter that causes emphasized text to be displayed in ALL
+    CAPS.
+
+-   deflists.py
+
+    Pandoc filter to convert definition lists to bullet lists with the
+    defined terms in strong emphasis (for compatibility with standard
+    markdown).
+
+-   graphviz.py
+
+    Pandoc filter to process code blocks with class "graphviz" into
+    graphviz-generated images.
+
+-   metavars.py
+
+    Pandoc filter to allow interpolation of metadata fields into a
+    document. %{fields} will be replaced by the field's value, assuming
+    it is of the type MetaInlines or MetaString.
+
+-   myemph.py
+
+    Pandoc filter that causes emphasis to be rendered using the custom
+    macro '\myemph{...}' rather than '\emph{...}' in latex. Other output
+    formats are unaffected.
+
+-   theorem.py
+
+    Pandoc filter to convert divs with class="theorem" to LaTeX theorem
+    environments in LaTeX output, and to numbered theorems in HTML
+    output.
+
+-   tikz.py
+
+    Pandoc filter to process raw latex tikz environments into images.
+    Assumes that pdflatex is in the path, and that the standalone
+    package is available. Also assumes that ImageMagick's convert is in
+    the path. Images are put in the tikz-images directory.
+
 
