@@ -94,7 +94,7 @@ def elt(eltType, numargs):
   def fun(*args):
     lenargs = len(args)
     if lenargs != numargs:
-      raise(eltType + ' expects ' + str(numargs) + ' arguments, but given ' +
+      raise ValueError(eltType + ' expects ' + str(numargs) + ' arguments, but given ' +
               str(lenargs))
     if len(args) == 1:
       xs = args[0]
