@@ -12,19 +12,20 @@ them.
 
 incomment = False
 
-def comment(k,v,fmt,meta):
-  global incomment
-  if k == 'RawBlock':
-    fmt, s = v
-    if fmt == "html":
-      if re.search("<!-- BEGIN COMMENT -->", s):
-        incomment = True
-        return []
-      elif re.search("<!-- END COMMENT -->", s):
-        incomment = False
-        return []
-  if incomment:
-    return []  # suppress anything in a comment
+
+def comment(k, v, fmt, meta):
+    global incomment
+    if k == 'RawBlock':
+        fmt, s = v
+        if fmt == "html":
+            if re.search("<!-- BEGIN COMMENT -->", s):
+                incomment = True
+                return []
+            elif re.search("<!-- END COMMENT -->", s):
+                incomment = False
+                return []
+    if incomment:
+        return []  # suppress anything in a comment
 
 if __name__ == "__main__":
-  toJSONFilter(comment)
+    toJSONFilter(comment)
