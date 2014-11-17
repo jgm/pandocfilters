@@ -104,7 +104,9 @@ def elt(eltType, numargs):
             raise ValueError(eltType + ' expects '
                              + str(numargs) + ' arguments, but given '
                              + str(lenargs))
-        if len(args) == 1:
+        if numargs == 0:
+            xs = []
+        elif len(args) == 1:
             xs = args[0]
         else:
             xs = args
