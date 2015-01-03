@@ -71,7 +71,7 @@ def stringify(x):
     result = []
 
     def go(key, val, format, meta):
-        if key == 'Str':
+        if key in ['Str', 'MetaString']:
             result.append(val)
         elif key == 'Code':
             result.append(val[1])
