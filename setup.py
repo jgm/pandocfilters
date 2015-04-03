@@ -6,7 +6,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(name='pandocfilters',
-      version='1.2.3',
+      version='1.2.4',
       description='Utilities for writing pandoc filters in python',
       long_description=read('README.rst'),
       author='John MacFarlane',
