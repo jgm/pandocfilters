@@ -13,7 +13,7 @@ from pandocfilters import toJSONFilter, Str, Para, Image
 
 
 def sha1(x):
-    return hashlib.sha1(x).hexdigest()
+    return hashlib.sha1(x.encode(sys.getfilesystemencoding())).hexdigest()
 
 imagedir = "graphviz-images"
 
