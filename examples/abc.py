@@ -16,7 +16,7 @@ imagedir = "abc-images"
 
 
 def sha1(x):
-    return hashlib.sha1(x).hexdigest()
+    return hashlib.sha1(x.encode(sys.getfilesystemencoding())).hexdigest()
 
 
 def abc2eps(abc, filetype, outfile):
@@ -45,7 +45,7 @@ def abc(key, value, format, meta):
                     sys.stderr.write('Created directory ' + imagedir + '\n')
                 except OSError:
                     pass
-                abc2eps(code, filetype, outfile)
+                abc2eps(code.encode("utf-8"), filetype, outfile)
                 sys.stderr.write('Created image ' + src + '\n')
             return Para([Image([], [src, ""])])
 
