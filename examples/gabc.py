@@ -2,6 +2,8 @@
 """
 Pandoc filter to convert code blocks with class "gabc" to LaTeX
 \\gabcsnippet commands in LaTeX output, and to images in HTML output.
+Assumes Ghostscript, LuaLaTeX, [Gregorio](http://gregorio-project.github.io/)
+and a reasonable selection of LaTeX packages are installed.
 """
 
 import os
@@ -89,12 +91,12 @@ def png(contents, outfile, latex_command):
     return src
 
 
-def gabc(key, value, frm, meta):                   # pylint:disable=I0011,W0613
+def gabc(key, value, fmt, meta):                   # pylint:disable=I0011,W0613
     """Handle gabc file inclusion and gabc code block."""
     if key == 'Code':
         [[ident, classes, kvs], contents] = value  # pylint:disable=I0011,W0612
         if "gabc" in classes:
-            if frm == "latex":
+            if fmt == "latex":
                 if ident == "":
                     label = ""
                 else:
@@ -113,7 +115,7 @@ def gabc(key, value, frm, meta):                   # pylint:disable=I0011,W0613
     elif key == 'CodeBlock':
         [[ident, classes, kvs], contents] = value
         if "gabc" in classes:
-            if frm == "latex":
+            if fmt == "latex":
                 if ident == "":
                     label = ""
                 else:
