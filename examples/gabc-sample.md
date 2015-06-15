@@ -1,6 +1,7 @@
 ---
 header-includes:
 
+    - \usepackage{libertine}
     - \usepackage[autocompile]{gregoriotex}
 
 ---
@@ -23,9 +24,9 @@ to get
 and this
 
 ~~~~~~
-`gabc-score`{.gabc}
+`gabc-score`{.gabc staffsize=12 annotation=Off. mode=2.}
 ~~~~~~
 
 to get the score in `gabc-score.gabc` :
 
-`gabc-score`{.gabc}
+`gabc-score`{.gabc staffsize=12 annotation=Off. mode=2.}

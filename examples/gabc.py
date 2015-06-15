@@ -44,6 +44,31 @@ def htmlblock(code):
     return RawBlock('html', code)
 
 
+def latexsnippet(code, kvs):
+    """Take in account key/values"""
+    snippet = ''
+    staffsize = int(kvs['staffsize']) if 'staffsize' in kvs else 17
+    annotationsize = .56 * staffsize
+    if 'mode' in kvs:
+        snippet = (
+            "\\greannotation{{\\fontsize{%s}{%s}\\selectfont{}%s}}\n" %
+            (annotationsize, annotationsize, kvs['mode'])
+        ) + snippet
+    if 'annotation' in kvs:
+        snippet = (
+            "\\grechangedim{annotationseparation}{%s mm}{0}\n"
+            "\\greannotation{{\\fontsize{%s}{%s}\\selectfont{}%s}}\n" %
+            (staffsize / 34, annotationsize, annotationsize, kvs['annotation'])
+        ) + snippet
+    snippet = (
+        "\\grechangestaffsize{%s}\n" % staffsize +
+        "\\def\\greinitialformat#1{{\\fontsize{%s}{%s}\\selectfont{}#1}}" %
+        (2.75 * staffsize, 2.75 * staffsize)
+    ) + snippet
+    snippet = "\\setlength{\\parskip}{0pt}\n" + snippet + code
+    return snippet
+
+
 def latex2png(snippet, outfile):
     """Compiles a LaTeX snippet to png"""
     pngimage = os.path.join(IMAGEDIR, outfile + '.png')
@@ -95,13 +120,19 @@ def gabc(key, value, fmt, meta):                   # pylint:disable=I0011,W0613
     """Handle gabc file inclusion and gabc code block."""
     if key == 'Code':
         [[ident, classes, kvs], contents] = value  # pylint:disable=I0011,W0612
+        kvs = {key: value for key, value in kvs}
         if "gabc" in classes:
             if fmt == "latex":
                 if ident == "":
                     label = ""
                 else:
                     label = '\\label{' + ident + '}'
-                return latex('\\includescore{' + contents + '}' + label)
+                return latex(
+                    "\n\\smallskip\n{%\n" +
+                    latexsnippet('\\gregorioscore{' + contents + '}', kvs) +
+                    "%\n}" +
+                    label
+                )
             else:
                 infile = contents + (
                     '.gabc' if '.gabc' not in contents else ''
@@ -109,23 +140,37 @@ def gabc(key, value, fmt, meta):                   # pylint:disable=I0011,W0613
                 with open(infile, 'r') as doc:
                     code = doc.read().split('%%\n')[1]
                 outfile = sha(code)
-                return [
-                    Image([], [png(contents, outfile, '\\includescore'), ""])
-                ]
+                return [Image([], [
+                    png(
+                        contents, outfile,
+                        latexsnippet('\\gregorioscore', kvs)
+                    ),
+                    ""
+                ])]
     elif key == 'CodeBlock':
         [[ident, classes, kvs], contents] = value
+        kvs = {key: value for key, value in kvs}
         if "gabc" in classes:
             if fmt == "latex":
                 if ident == "":
                     label = ""
                 else:
                     label = '\\label{' + ident + '}'
-                return [latexblock('\\gabcsnippet{' + contents + '}' + label)]
+                return [latexblock(
+                    "\n\\smallskip\n{%\n" +
+                    latexsnippet('\\gabcsnippet{' + contents + '}', kvs) +
+                    "%\n}" +
+                    label
+                    )]
             else:
                 outfile = sha(contents)
-                return Para(
-                    [Image([], [png(contents, outfile, '\\gabcsnippet'), ""])]
-                )
+                return Para([Image([], [
+                    png(
+                        contents, outfile,
+                        latexsnippet('\\gabcsnippet', kvs)
+                    ),
+                    ""
+                ])])
 
 
 if __name__ == "__main__":
