@@ -102,8 +102,9 @@ def latex2png(snippet, outfile):
     )
 
 
-def png(contents, outfile, latex_command):
+def png(contents, latex_command):
     """Creates a png if needed."""
+    outfile = sha(contents + latex_command)
     src = os.path.join(IMAGEDIR, outfile + '.png')
     if not os.path.isfile(src):
         try:
@@ -139,10 +140,9 @@ def gabc(key, value, fmt, meta):                   # pylint:disable=I0011,W0613
                 )
                 with open(infile, 'r') as doc:
                     code = doc.read().split('%%\n')[1]
-                outfile = sha(code)
                 return [Image([], [
                     png(
-                        contents, outfile,
+                        contents,
                         latexsnippet('\\gregorioscore', kvs)
                     ),
                     ""
@@ -163,10 +163,9 @@ def gabc(key, value, fmt, meta):                   # pylint:disable=I0011,W0613
                     label
                     )]
             else:
-                outfile = sha(contents)
                 return Para([Image([], [
                     png(
-                        contents, outfile,
+                        contents,
                         latexsnippet('\\gabcsnippet', kvs)
                     ),
                     ""
