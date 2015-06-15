@@ -38,7 +38,7 @@ def latexblock(code):
     return RawBlock('latex', code)
 
 
-def ly2png(lily, outfile):
+def ly2png(lily, outfile, staffsize):
     p = Popen([
         "lilypond",
         "-dno-point-and-click",
@@ -54,7 +54,8 @@ def ly2png(lily, outfile):
         "oddHeaderMarkup=##f\n"
         "bookTitleMarkup = ##f\n"
         "scoreTitleMarkup = ##f\n"
-        "}\n" +
+        "}\n"
+        "#(set-global-staff-size %s)\n" % staffsize +
         lily).encode("utf-8"))
     p.communicate()
     p.stdin.close()
@@ -67,9 +68,9 @@ def ly2png(lily, outfile):
     ], stdout=-3)
 
 
-def png(contents):
+def png(contents, staffsize):
     """Creates a png if needed."""
-    outfile = os.path.join(IMAGEDIR, sha(contents))
+    outfile = os.path.join(IMAGEDIR, sha(contents + str(staffsize)))
     src = outfile + '.png'
     if not os.path.isfile(src):
         try:
@@ -77,7 +78,7 @@ def png(contents):
             stderr.write('Created directory ' + IMAGEDIR + '\n')
         except OSError:
             pass
-        ly2png(contents, outfile)
+        ly2png(contents, outfile, staffsize)
         stderr.write('Created image ' + src + '\n')
     return src
 
@@ -85,34 +86,43 @@ def png(contents):
 def lily(key, value, fmt, meta):
     if key == 'Code':
         [[ident, classes, kvs], contents] = value  # pylint:disable=I0011,W0612
+        kvs = {key: value for key, value in kvs}
         if "ly" in classes:
+            staffsize = kvs['staffsize'] if 'staffsize' in kvs else 20
             if fmt == "latex":
                 if ident == "":
                     label = ""
                 else:
                     label = '\\label{' + ident + '}'
-                return latex('\\includely{' + contents + '}' + label)
+                return latex(
+                    '\\includely[staffsize=%s]{%s}' % (staffsize, contents) +
+                    label
+                )
             else:
                 infile = contents + (
                     '.ly' if '.ly' not in contents else ''
                 )
-                stderr.write(infile + '\n')
                 with open(infile, 'r') as doc:
                     code = doc.read()
                 return [
-                    Image([], [png(code), ""])
+                    Image([], [png(code, staffsize), ""])
                 ]
     if key == 'CodeBlock':
-        [[ident, classes, keyvals], code] = value
+        [[ident, classes, kvs], code] = value
+        kvs = {key: value for key, value in kvs}
         if "ly" in classes:
+            staffsize = kvs['staffsize'] if 'staffsize' in kvs else 20
             if fmt == "latex":
                 if ident == "":
                     label = ""
                 else:
                     label = '\\label{' + ident + '}'
-                return latexblock('\\lily{' + code + '}' + label)
+                return latexblock(
+                    '\\lily[staffsize=%s]{%s}' % (staffsize, code) +
+                    label
+                )
             else:
-                return Para([Image([], [png(code), ""])])
+                return Para([Image([], [png(code, staffsize), ""])])
 
 if __name__ == "__main__":
     toJSONFilter(lily)

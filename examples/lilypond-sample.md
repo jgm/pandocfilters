@@ -23,9 +23,9 @@ to get
 and this
 
 ~~~~~~
-`lilypond-score`{.ly}
+`lilypond-score`{.ly staffsize=12}
 ~~~~~~
 
 to get the score in `ly-score.ly` :
 
-`lilypond-score`{.ly}
+`lilypond-score`{.ly staffsize=12}
