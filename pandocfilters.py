@@ -9,6 +9,7 @@ AST serialized as JSON.
 
 import sys
 import json
+import io
 
 
 def walk(x, action, format, meta):
@@ -55,7 +56,8 @@ def toJSONFilter(action):
     the list to which the target object belongs.    (So, returning an
     empty list deletes the object.)
     """
-    doc = json.loads(sys.stdin.read())
+    input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
+    doc = json.loads(input_stream.read())
     if len(sys.argv) > 1:
         format = sys.argv[1]
     else:
