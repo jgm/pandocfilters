@@ -18,12 +18,12 @@ def metavars(key, value, format, meta):
         if m:
             field = m.group(1)
             result = meta.get(field, {})
-            if 'MetaInlines' in result:
+            if 'MetaInlines' in result['t']:
                 return Span(attributes({'class': 'interpolated',
                                         'field': field}),
-                            result['MetaInlines'])
-            elif 'MetaString' in result:
-                return Str(result['MetaString'])
+                            result['c'])
+            elif 'MetaString' in result[t]:
+                return Str(result['c'])
 
 if __name__ == "__main__":
     toJSONFilter(metavars)
