@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 """
-    Pandoc filter to process a code block with class "git-filter" to present
-    the diff of a file between two commits.
+    Pandoc filter to process a code block with class "git-diff" to present the
+    diff of a file between two commits.
 
     class variables:
     * dir:          Directory from (optional, defaults to ".")
@@ -26,7 +26,7 @@ import subprocess;
 def gitdiff(key, value, format, meta):
     if key == "CodeBlock":
         [[ident, classes, keyvals], contents] = value
-        if "git-filter" in classes:
+        if "git-diff" in classes:
             folder = "."
             commra = ""
             obj = ""

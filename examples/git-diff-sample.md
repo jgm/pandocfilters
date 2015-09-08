@@ -19,9 +19,9 @@ index 9f61293..042a17c 100644
 
 # git filter extension
 
-This diff is generated from `git-filter` extension.
+This diff is generated from `git-diff` extension.
 
-```{.git-filter commit-range="1.1.1..1.2.4" objects="../README" diffoptions="-U0"}
+```{.git-diff commit-range="1.1.1..1.2.4" objects="../README" diffoptions="-U0"}
 HEADER
 ```
 
