@@ -10,6 +10,7 @@ AST serialized as JSON.
 import sys
 import json
 import io
+import codecs
 
 
 def walk(x, action, format, meta):
@@ -56,7 +57,13 @@ def toJSONFilter(action):
     the list to which the target object belongs.    (So, returning an
     empty list deletes the object.)
     """
-    input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
+    try: 
+        input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
+    except AttributeError:
+        # Python 2 does not have sys.stdin.buffer.
+        # REF: http://stackoverflow.com/questions/2467928/python-unicodeencodeerror-when-reading-from-stdin
+        input_stream = codecs.getreader("utf-8")(sys.stdin)
+        
     doc = json.loads(input_stream.read())
     if len(sys.argv) > 1:
         format = sys.argv[1]
