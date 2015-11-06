@@ -7,6 +7,7 @@ Functions to aid writing python scripts that process the pandoc
 AST serialized as JSON.
 """
 
+from functools import reduce
 import sys
 import json
 import io
