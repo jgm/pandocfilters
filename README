@@ -1,7 +1,11 @@
 pandocfilters
 =============
 
-A python module for writing pandoc filters.  Pandoc filters
+A python module for writing filters
+
+What are pandoc filters?
+--------------------------
+Pandoc filters
 are pipes that read a JSON serialization of the Pandoc AST
 from stdin, transform it in some way, and write it to stdout.
 They can be used with pandoc (>= 1.12) either using pipes ::
@@ -17,10 +21,18 @@ and `the tutorial on writing filters`__.
 
 __ http://johnmacfarlane.net/pandoc/scripting.html
 
-To install::
+Installing
+--------------
+Run this inside the present directory::
 
     python setup.py install
 
+Or install from PyPI::
+
+    pip install pandocfilters
+
+Available functions
+----------------------
 The ``pandocfilters`` module exports the following functions:
 
 ``walk(x, action, format, meta)``
@@ -51,6 +63,8 @@ The ``pandocfilters`` module exports the following functions:
   Returns an attribute list, constructed from the
   dictionary ``attrs``.
 
+How to use
+--------------
 Most users will only need ``toJSONFilter``.  Here is a simple example
 of its use::
 
