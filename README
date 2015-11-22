@@ -43,10 +43,10 @@ The ``pandocfilters`` module exports the following functions:
   Converts an action into a filter that reads a JSON-formatted
   pandoc document from stdin, transforms it by walking the tree
   with the action, and returns a new JSON-formatted pandoc document
-  to stdout.  The argument is a function action(key, value, format, meta),
-  where key is the type of the pandoc object (e.g. 'Str', 'Para'),
-  value is the contents of the object (e.g. a string for 'Str',
-  a list of inline elements for 'Para'), format is the target
+  to stdout.  The argument is a function ``action(key, value, format, meta)``,
+  where key is the type of the pandoc object (e.g. ``'Str'``, ``'Para'``),
+  value is the contents of the object (e.g. a string for ``'Str'``,
+  a list of inline elements for ``'Para'``), format is the target
   output format (which will be taken for the first command line
   argument if present), and meta is the document's metadata.
   If the function returns None, the object to which it applies
