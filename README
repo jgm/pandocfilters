@@ -1,14 +1,18 @@
 pandocfilters
 =============
 
-A python module for writing pandoc filters.  Pandoc filters
+A python module for writing `pandoc <http://pandoc.org/>`_ filters
+
+What are pandoc filters?
+--------------------------
+Pandoc filters
 are pipes that read a JSON serialization of the Pandoc AST
 from stdin, transform it in some way, and write it to stdout.
-They can be used with pandoc (>= 1.12) either using pipes:::
+They can be used with pandoc (>= 1.12) either using pipes ::
 
     pandoc -t json -s | ./caps.py | pandoc -f json
 
-or using the ``--filter`` (or ``-F``) command-line option:::
+or using the ``--filter`` (or ``-F``) command-line option. ::
 
     pandoc --filter ./caps.py -s
 
@@ -17,10 +21,18 @@ and `the tutorial on writing filters`__.
 
 __ http://johnmacfarlane.net/pandoc/scripting.html
 
-To install::
+Installing
+--------------
+Run this inside the present directory::
 
     python setup.py install
 
+Or install from PyPI::
+
+    pip install pandocfilters
+
+Available functions
+----------------------
 The ``pandocfilters`` module exports the following functions:
 
 ``walk(x, action, format, meta)``
@@ -31,10 +43,10 @@ The ``pandocfilters`` module exports the following functions:
   Converts an action into a filter that reads a JSON-formatted
   pandoc document from stdin, transforms it by walking the tree
   with the action, and returns a new JSON-formatted pandoc document
-  to stdout.  The argument is a function action(key, value, format, meta),
-  where key is the type of the pandoc object (e.g. 'Str', 'Para'),
-  value is the contents of the object (e.g. a string for 'Str',
-  a list of inline elements for 'Para'), format is the target
+  to stdout.  The argument is a function ``action(key, value, format, meta)``,
+  where key is the type of the pandoc object (e.g. ``'Str'``, ``'Para'``),
+  value is the contents of the object (e.g. a string for ``'Str'``,
+  a list of inline elements for ``'Para'``), format is the target
   output format (which will be taken for the first command line
   argument if present), and meta is the document's metadata.
   If the function returns None, the object to which it applies
@@ -51,8 +63,10 @@ The ``pandocfilters`` module exports the following functions:
   Returns an attribute list, constructed from the
   dictionary ``attrs``.
 
+How to use
+--------------
 Most users will only need ``toJSONFilter``.  Here is a simple example
-of its use:::
+of its use::
 
     #!/usr/bin/env python
 
@@ -77,60 +91,50 @@ The examples subdirectory in the source repository contains the
 following filters. These filters should provide a useful starting point
 for developing your own pandocfilters.
 
--   ``abc.py``
-
+``abc.py``
     Pandoc filter to process code blocks with class ``abc`` containing ABC
     notation into images. Assumes that abcm2ps and ImageMagick's convert
     are in the path. Images are put in the abc-images directory.
 
--   ``caps.py``
-
+``caps.py``
     Pandoc filter to convert all regular text to uppercase. Code, link
     URLs, etc. are not affected.
 
--   ``comments.py``
-
+``comments.py``
     Pandoc filter that causes everything between
     ``<!-- BEGIN COMMENT -->`` and ``<!-- END COMMENT -->`` to be ignored.
     The comment lines must appear on lines by themselves, with blank
     lines surrounding
 
--   ``deemph.py``
-
+``deemph.py``
     Pandoc filter that causes emphasized text to be displayed in ALL
     CAPS.
 
--   ``deflists.py``
-
+``deflists.py``
     Pandoc filter to convert definition lists to bullet lists with the
     defined terms in strong emphasis (for compatibility with standard
     markdown).
 
--   ``graphviz.py``
-
+``graphviz.py``
     Pandoc filter to process code blocks with class ``graphviz`` into
     graphviz-generated images.
 
--   ``metavars.py``
-
+``metavars.py``
     Pandoc filter to allow interpolation of metadata fields into a
     document. ``%{fields}`` will be replaced by the field's value, assuming
     it is of the type ``MetaInlines`` or ``MetaString``.
 
--   ``myemph.py``
-
+``myemph.py``
     Pandoc filter that causes emphasis to be rendered using the custom
     macro ``\myemph{...}`` rather than ``\emph{...}`` in latex. Other output
     formats are unaffected.
 
--   ``theorem.py``
-
+``theorem.py``
     Pandoc filter to convert divs with ``class="theorem"`` to LaTeX theorem
     environments in LaTeX output, and to numbered theorems in HTML
     output.
 
--   ``tikz.py``
-
+``tikz.py``
     Pandoc filter to process raw latex tikz environments into images.
     Assumes that pdflatex is in the path, and that the standalone
     package is available. Also assumes that ImageMagick's convert is in
