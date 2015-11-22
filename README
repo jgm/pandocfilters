@@ -4,11 +4,11 @@ pandocfilters
 A python module for writing pandoc filters.  Pandoc filters
 are pipes that read a JSON serialization of the Pandoc AST
 from stdin, transform it in some way, and write it to stdout.
-They can be used with pandoc (>= 1.12) either using pipes:::
+They can be used with pandoc (>= 1.12) either using pipes ::
 
     pandoc -t json -s | ./caps.py | pandoc -f json
 
-or using the ``--filter`` (or ``-F``) command-line option:::
+or using the ``--filter`` (or ``-F``) command-line option. ::
 
     pandoc --filter ./caps.py -s
 
@@ -52,7 +52,7 @@ The ``pandocfilters`` module exports the following functions:
   dictionary ``attrs``.
 
 Most users will only need ``toJSONFilter``.  Here is a simple example
-of its use:::
+of its use::
 
     #!/usr/bin/env python
 
