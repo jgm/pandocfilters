@@ -1,7 +1,7 @@
 pandocfilters
 =============
 
-A python module for writing filters
+A python module for writing `pandoc <http://pandoc.org/>`_ filters
 
 What are pandoc filters?
 --------------------------
