@@ -41,7 +41,7 @@ def walk(x, action, format, meta):
         return x
 
 
-def toJSONFilter(action):
+def toJSONFilter(action,filedescriptor=sys.stdout):
     """Converts an action into a filter that reads a JSON-formatted
     pandoc document from stdin, transforms it by walking the tree
     with the action, and returns a new JSON-formatted pandoc document
@@ -56,7 +56,11 @@ def toJSONFilter(action):
     be replaced.    If it returns a list, the list will be spliced in to
     the list to which the target object belongs.    (So, returning an
     empty list deletes the object.)
+
+    filedescriptor ... file descriptor that must support _fd.write (if None, 
+    the JSON tree is not dumped to it, default: sys.stdout)
     """
+    
     try: 
         input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
     except AttributeError:
@@ -70,7 +74,13 @@ def toJSONFilter(action):
     else:
         format = ""
     altered = walk(doc, action, format, doc[0]['unMeta'])
-    json.dump(altered, sys.stdout)
+    
+    if filedescriptor:
+        json.dump(altered, filedescriptor)
+
+    return altered
+
+    
 
 
 def stringify(x):
