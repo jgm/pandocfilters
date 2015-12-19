@@ -3,12 +3,12 @@ pandocfilters
 
 A python module for writing `pandoc <http://pandoc.org/>`_ filters
 
-What are pandoc filters?
+Pandoc Filters
 --------------------------
-Pandoc filters
-are pipes that read a JSON serialization of the Pandoc AST
-from stdin, transform it in some way, and write it to stdout.
-They can be used with pandoc (>= 1.12) either using pipes ::
+Pandoc filters are pipes that read a JSON serialization of
+the Pandoc AST from stdin, transform it in some way, and
+write it to stdout. They can be used with pandoc (>= 1.12)
+either using pipes ::
 
     pandoc -t json -s | ./caps.py | pandoc -f json
 
@@ -21,8 +21,8 @@ and `the tutorial on writing filters`__.
 
 __ http://johnmacfarlane.net/pandoc/scripting.html
 
-Installing
---------------
+Installation
+--------------------------
 Run this inside the present directory::
 
     python setup.py install
@@ -31,8 +31,8 @@ Or install from PyPI::
 
     pip install pandocfilters
 
-Available functions
-----------------------
+Functions
+--------------------------
 The ``pandocfilters`` module exports the following functions:
 
 ``walk(x, action, format, meta)``
@@ -63,8 +63,8 @@ The ``pandocfilters`` module exports the following functions:
   Returns an attribute list, constructed from the
   dictionary ``attrs``.
 
-How to use
---------------
+Usage
+--------------------------
 Most users will only need ``toJSONFilter``.  Here is a simple example
 of its use::
 
@@ -85,11 +85,10 @@ of its use::
       toJSONFilter(caps)
 
 Examples
---------
-
-The examples subdirectory in the source repository contains the
-following filters. These filters should provide a useful starting point
-for developing your own pandocfilters.
+--------------------------
+The examples subdirectory in the source repository demonstrates
+various filters. These filters are a useful starting point for
+developing new pandocfilters.
 
 ``abc.py``
     Pandoc filter to process code blocks with class ``abc`` containing ABC
@@ -140,3 +139,109 @@ for developing your own pandocfilters.
     package is available. Also assumes that ImageMagick's convert is in
     the path. Images are put in the ``tikz-images`` directory.
 
+Keys
+--------------------------
+Most of the pandocfilter examples rely check the value of a key for
+a specific key value. This section provides an overview of these keys.
+
+Block Elements
+
+``BlockQuote``
+    A [block quote](https://daringfireball.net/projects/markdown/syntax#blockquote) (list of blocks).
+
+``BulletList``
+    A [bullet list](https://daringfireball.net/projects/markdown/syntax#list) (list of items, each a list of blocks).
+
+``CodeBlock``
+    A [code block](https://daringfireball.net/projects/markdown/syntax#precode) (literal) with attributes.
+
+``DefinitionList``
+    Definition list Each list item is a pair consisting of a term
+    (a list of inlines) and one or more definitions (each a list of
+    blocks).
+
+``Div``
+    Generic block container with attributes.
+    
+``Header``
+    Header - level (integer) and text (inlines).
+
+``HorizontalRule``
+    A [horizontal rule](https://daringfireball.net/projects/markdown/syntax#hr)
+
+``Null``
+    Nothing.
+
+``OrderedList``
+    An ordered list (attributes and a list of items, each a list of blocks)
+
+``Para``
+    A [paragraph](https://daringfireball.net/projects/markdown/syntax#p)
+    of text.
+
+``Plain``
+    Plain text, not a paragraph.
+
+``RawBlock``
+    A raw text block.
+
+``Table``
+    A table, with caption, column alignments (required), relative column
+    widths (0 = default), column headers (each a list of blocks), and
+    rows (each a list of lists of blocks)
+
+Inline Elements
+
+``Cite``
+    Citation (list of inlines).
+
+``Code``
+    Inline code (literal).
+
+``Emph``
+    Emphasized text (list of inlines), typically italics.
+
+``Image``
+    Image: alt text (list of inlines), target.
+
+``LineBreak``
+    Hard line break.
+
+``Link``
+    Hyperlink: text (list of inlines), target.
+
+``Math``
+    TeX math (literal).
+
+``Note``
+    Footnote or endnote.
+
+``Quoted``
+    Quoted text (list of inlines).
+
+``RawInline``
+    Raw inline.
+
+``SmallCaps``
+    Small caps text (list of inlines).
+
+``Space``
+    Inter-word space.
+
+``Span``
+    Generic inline container with attributes.
+
+``Str``
+    Text (string)
+
+``Strikeout``
+    Strikeout text, also called strikethrough (list of inlines).
+
+``Strong``
+    Strongly emphasized text (list of inlines), typically bold.
+
+``Subscript``
+    Subscripted text (list of inlines).
+
+``Superscript``
+    Superscripted text (list of inlines).
