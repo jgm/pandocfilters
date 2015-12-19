@@ -7,6 +7,7 @@ Functions to aid writing python scripts that process the pandoc
 AST serialized as JSON.
 """
 
+from functools import reduce
 import sys
 import json
 import io
@@ -42,10 +43,13 @@ def walk(x, action, format, meta):
 
 
 def toJSONFilter(action):
-    """Converts an action into a filter that reads a JSON-formatted
+    toJSONFilters([action])
+
+def toJSONFilters(actions):
+    """Converts a list of actions into a filter that reads a JSON-formatted
     pandoc document from stdin, transforms it by walking the tree
-    with the action, and returns a new JSON-formatted pandoc document
-    to stdout.  The argument is a function action(key, value, format, meta),
+    with the actions, and returns a new JSON-formatted pandoc document
+    to stdout.  The argument is a list of functions action(key, value, format, meta),
     where key is the type of the pandoc object (e.g. 'Str', 'Para'),
     value is the contents of the object (e.g. a string for 'Str',
     a list of inline elements for 'Para'), format is the target
@@ -69,7 +73,7 @@ def toJSONFilter(action):
         format = sys.argv[1]
     else:
         format = ""
-    altered = walk(doc, action, format, doc[0]['unMeta'])
+    altered = reduce(lambda x, action: walk(x, action, format, doc[0]['unMeta']), actions, doc)
     json.dump(altered, sys.stdout)
 
 
