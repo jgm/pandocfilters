@@ -64,7 +64,7 @@ def tikz(key, value, format, meta):
                     pass
                 tikz2image(code, filetype, outfile)
                 sys.stderr.write('Created image ' + src + '\n')
-            return Para([Image([], [src, ""])])
+            return Para([Image(['', [], []], [], [src, ""])])
 
 if __name__ == "__main__":
     toJSONFilter(tikz)

@@ -47,7 +47,7 @@ def abc(key, value, format, meta):
                     pass
                 abc2eps(code.encode("utf-8"), filetype, outfile)
                 sys.stderr.write('Created image ' + src + '\n')
-            return Para([Image([], [src, ""])])
+            return Para([Image(['', [], []], [], [src, ""])])
 
 if __name__ == "__main__":
     toJSONFilter(abc)

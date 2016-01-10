@@ -140,7 +140,7 @@ def gabc(key, value, fmt, meta):                   # pylint:disable=I0011,W0613
                 )
                 with open(infile, 'r') as doc:
                     code = doc.read().split('%%\n')[1]
-                return [Image([], [
+                return [Image(['', [], []], [], [
                     png(
                         contents,
                         latexsnippet('\\gregorioscore', kvs)
@@ -163,7 +163,7 @@ def gabc(key, value, fmt, meta):                   # pylint:disable=I0011,W0613
                     label
                     )]
             else:
-                return Para([Image([], [
+                return Para([Image(['', [], []], [], [
                     png(
                         contents,
                         latexsnippet('\\gabcsnippet', kvs)
