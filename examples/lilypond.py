@@ -105,7 +105,7 @@ def lily(key, value, fmt, meta):
                 with open(infile, 'r') as doc:
                     code = doc.read()
                 return [
-                    Image([], [png(code, staffsize), ""])
+                    Image(['', [], []], [], [png(code, staffsize), ""])
                 ]
     if key == 'CodeBlock':
         [[ident, classes, kvs], code] = value
@@ -122,7 +122,7 @@ def lily(key, value, fmt, meta):
                     label
                 )
             else:
-                return Para([Image([], [png(code, staffsize), ""])])
+                return Para([Image(['', [], []], [], [png(code, staffsize), ""])])
 
 if __name__ == "__main__":
     toJSONFilter(lily)
