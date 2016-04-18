@@ -73,8 +73,8 @@ def toJSONFilters(actions):
         format = sys.argv[1]
     else:
         format = ""
-    doc[1] = reduce(lambda x, action: walk(x, action, format, doc[0]['unMeta']), actions, doc[1])
-    json.dump(doc, sys.stdout)
+    altered = reduce(lambda x, action: walk(x, action, format, doc[0]['unMeta']), actions, doc)
+    json.dump(altered, sys.stdout)
 
 
 def stringify(x):
