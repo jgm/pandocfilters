@@ -34,10 +34,9 @@ def walk(x, action, format, meta):
                 array.append(walk(item, action, format, meta))
         return array
     elif isinstance(x, dict):
-        obj = {}
         for k in x:
-            obj[k] = walk(x[k], action, format, meta)
-        return obj
+            x[k] = walk(x[k], action, format, meta)
+        return x
     else:
         return x
 
@@ -73,8 +72,8 @@ def toJSONFilters(actions):
         format = sys.argv[1]
     else:
         format = ""
-    doc[1] = reduce(lambda x, action: walk(x, action, format, doc[0]['unMeta']), actions, doc[1])
-    json.dump(doc, sys.stdout)
+    altered = reduce(lambda x, action: walk(x, action, format, doc[0]['unMeta']), actions, doc)
+    json.dump(altered, sys.stdout)
 
 
 def stringify(x):
