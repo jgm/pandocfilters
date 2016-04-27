@@ -9,7 +9,7 @@ Alice -> Bob: Another authentication Request
 Alice <-- Bob: another authentication Response
 ```
 
-to get 
+to get
 
 ```plantuml
 Alice -> Bob: Authentication Request
@@ -29,7 +29,7 @@ Bob --> Älöc: Authentication Response
 Älöc <-- Bob: another authentication Response
 ```
 
-See [whatever](#whatever) for an example with options `{.plantuml #whatever caption="this is the caption" width=65%}`
+See [(this is a link to whatever)](#whatever) for an example with options `{.plantuml #whatever caption="this is the caption" width=65%}`
 
 ```{.plantuml #whatever caption="this is the caption" width=65%}
 Alice -> Bob: Authentication Request
