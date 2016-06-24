@@ -1,5 +1,0 @@
-﻿---
-author: Caleb Hyde
----
-
-# %{author}

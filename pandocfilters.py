@@ -7,11 +7,71 @@ Functions to aid writing python scripts that process the pandoc
 AST serialized as JSON.
 """
 
-from functools import reduce
-import sys
-import json
-import io
 import codecs
+import hashlib
+import io
+import json
+import os
+import sys
+from functools import reduce
+
+
+# some utility-functions: make it easier to create your own filters
+
+
+def get_filename4code(module, content, ext=None):
+    """used to generate a filename based on the content, ensures that the (temporary) directory exists
+
+    Example:
+        filename = get_filename4code("myfilter", code)
+    """
+    imagedir = module + "-images"
+    fn = hashlib.sha1(content.encode(sys.getfilesystemencoding())).hexdigest()
+    try:
+        os.mkdir(imagedir)
+        sys.stderr.write('Created directory ' + imagedir + '\n')
+    except OSError:
+        pass
+    if ext:
+        fn += "." + ext
+    return os.path.join(imagedir, fn)
+
+
+def get_caption(kv):
+    """get caption from the keyvalues (options)
+
+    Example:
+      if key == 'CodeBlock':
+        [[ident, classes, keyvals], code] = value
+        caption, typef, keyvals = get_caption(keyvals)
+        ...
+        return Para([Image([ident, [], keyvals], caption, [name_of_the_imagefile, typef])])
+    """
+    res = []
+    caption = []
+    typef = ""
+    for k, v in kv:
+        if k == u"caption":
+            caption = [Str(v)]
+            typef = "fig:"
+        else:
+            res.append([k, v])
+
+    return caption, typef, res
+
+
+def get_extension(format, default, **alternates):
+    """get the extension for the result, needs a default and some specialisations
+
+    Example:
+      filetype = get_extension(format, "png", html="svg", latex="eps")
+    """
+    try:
+        return alternates[format]
+    except KeyError:
+        return default
+
+# end of utilities
 
 
 def walk(x, action, format, meta):
@@ -45,6 +105,7 @@ def walk(x, action, format, meta):
 def toJSONFilter(action):
     toJSONFilters([action])
 
+
 def toJSONFilters(actions):
     """Converts a list of actions into a filter that reads a JSON-formatted
     pandoc document from stdin, transforms it by walking the tree
@@ -61,13 +122,13 @@ def toJSONFilters(actions):
     the list to which the target object belongs.    (So, returning an
     empty list deletes the object.)
     """
-    try: 
+    try:
         input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
     except AttributeError:
         # Python 2 does not have sys.stdin.buffer.
         # REF: http://stackoverflow.com/questions/2467928/python-unicodeencodeerror-when-reading-from-stdin
         input_stream = codecs.getreader("utf-8")(sys.stdin)
-        
+
     doc = json.loads(input_stream.read())
     if len(sys.argv) > 1:
         format = sys.argv[1]
