@@ -109,6 +109,10 @@ for developing your own pandocfilters.
     Pandoc filter to convert all regular text to uppercase. Code, link
     URLs, etc. are not affected.
 
+``blockdiag.py``
+    Pandoc filter to process code blocks with class "blockdiag" into
+    generated images. Needs utils from http://blockdiag.com.
+
 ``comments.py``
     Pandoc filter that causes everything between
     ``<!-- BEGIN COMMENT -->`` and ``<!-- END COMMENT -->`` to be ignored.
