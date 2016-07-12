@@ -31,11 +31,14 @@ def blockdiag(key, value, format, _):
             dest = filename + '.' + filetype
 
             if not os.path.isfile(dest):
+                cmd = str(list(kw)[0])
+
                 txt = code.encode(sys.getfilesystemencoding())
+                if not txt.startswith(cmd):
+                    txt = cmd + "{\n" + txt + "\n}\n"
                 with open(src, "w") as f:
                     f.write(txt)
 
-                cmd = list(kw)[0]
                 call([cmd, "-a", "-T"+filetype, src])
                 sys.stderr.write('Created image ('+ cmd + ") " + dest + '\n')
 

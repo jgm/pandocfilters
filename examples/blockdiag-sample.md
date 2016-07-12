@@ -35,6 +35,13 @@ blockdiag {
 }
 ```
 
+DRY: no need to include the type twice
+
+```{.blockdiag #whatever caption="this is the caption" width=65%}
+   A -> B -> C -> D;
+   A -> E -> F -> G;
+```
+
 # Samples
 
 from <http://blockdiag.com/en/actdiag/examples.html>,
@@ -42,7 +49,7 @@ from <http://blockdiag.com/en/actdiag/examples.html>,
 
 
 ```{.blockdiag caption="blockdiag: shape of nodes" width=80%}
-blockdiag {
+
   // standard node shapes
   box [shape = box];
   square [shape = square];
@@ -78,11 +85,9 @@ blockdiag {
 
   condition -> database -> terminator -> input;
   loopin -> loopout;
-}
 ```
 
 ```{.actdiag caption="actdiag: simple diagram" width=80%}
-actdiag {
   write -> convert -> image
 
   lane user {
@@ -93,7 +98,6 @@ actdiag {
   lane actdiag {
      convert [label = "Convert reST to Image"];
   }
-}
 ```
 
 
@@ -119,7 +123,6 @@ nwdiag {
 
 
 ```{.nwdiag caption="nwdiag: peer networks" width=80%}
-nwdiag {
   inet [shape = cloud];
   inet -- router;
 
@@ -128,12 +131,10 @@ nwdiag {
     web01;
     web02;
   }
-}
 ```
 
 
 ```{.rackdiag caption="rackdiag: multiple racks" width=80%}
-rackdiag {
   // define 1st rack
   rack {
     16U;
@@ -161,12 +162,10 @@ rackdiag {
     7: Load Balancer
     8: L3 Switch
   }
-}
 ```
 
 
 ```{.packetdiag caption="packetdiag: Structure of TCP Header"}
-packetdiag {
   colwidth = 32
   node_height = 72
 
@@ -187,19 +186,16 @@ packetdiag {
   144-159: Urgent Pointer
   160-191: (Options and Padding)
   192-223: data [colheight = 3]
-}
 ```
 
 
 ```{.seqdiag caption="seqdiag: simple diagram" width=80%}
-seqdiag {
   browser  -> webserver [label = "GET /index.html"];
   browser <-- webserver;
   browser  -> webserver [label = "POST /blog/comment"];
               webserver  -> database [label = "INSERT comment"];
               webserver <-- database;
   browser <-- webserver;
-}
 ```
 
 ```{.seqdiag caption="seqdiag: order of elements" width=80%}
