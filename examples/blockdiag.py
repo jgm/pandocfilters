@@ -18,7 +18,10 @@ def blockdiag(key, value, format, _):
     if key == 'CodeBlock':
         [[ident, classes, keyvals], code] = value
 
-        if "blockdiag" in classes:
+        all_kw = { "actdiag", "blockdiag", "nwdiag", "packetdiag", "rackdiag", "seqdiag" }
+        kw = all_kw & set(classes)
+
+        if len(kw) == 1:
             caption, typef, keyvals = get_caption(keyvals)
 
             filename = get_filename4code("blockdiag", code)
@@ -32,8 +35,9 @@ def blockdiag(key, value, format, _):
                 with open(src, "w") as f:
                     f.write(txt)
 
-                call(["blockdiag", "-a", "-T"+filetype, src])
-                sys.stderr.write('Created image ' + dest + '\n')
+                cmd = list(kw)[0]
+                call([cmd, "-a", "-T"+filetype, src])
+                sys.stderr.write('Created image ('+ cmd + ") " + dest + '\n')
 
             return Para([Image([ident, [], keyvals], caption, [dest, typef])])
 
