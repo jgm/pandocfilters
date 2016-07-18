@@ -13,7 +13,6 @@ import io
 import json
 import os
 import sys
-from functools import reduce
 
 
 # some utility-functions: make it easier to create your own filters
@@ -134,7 +133,11 @@ def toJSONFilters(actions):
         format = sys.argv[1]
     else:
         format = ""
-    altered = reduce(lambda x, action: walk(x, action, format, doc[0]['unMeta']), actions, doc)
+
+    altered = doc
+    for action in actions:
+        altered = walk(altered, action, format, doc[0]['unMeta'])
+
     json.dump(altered, sys.stdout)
 
 
