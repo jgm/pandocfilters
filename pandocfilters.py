@@ -171,6 +171,8 @@ def stringify(x):
             result.append(val[1])
         elif key == 'LineBreak':
             result.append(" ")
+        elif key == 'SoftBreak':
+            result.append(" ")
         elif key == 'Space':
             result.append(" ")
 
