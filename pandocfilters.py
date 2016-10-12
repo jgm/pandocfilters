@@ -38,6 +38,15 @@ def get_filename4code(module, content, ext=None):
         fn += "." + ext
     return os.path.join(imagedir, fn)
 
+def get_value(kv, key, value = None):
+    """get value from the keyvalues (options)"""
+    res = []
+    for k, v in kv:
+        if k == key:
+            value = v
+        else:
+            res.append([k, v])
+    return value, res
 
 def get_caption(kv):
     """get caption from the keyvalues (options)
@@ -49,15 +58,12 @@ def get_caption(kv):
         ...
         return Para([Image([ident, [], keyvals], caption, [filename, typef])])
     """
-    res = []
     caption = []
     typef = ""
-    for k, v in kv:
-        if k == u"caption":
-            caption = [Str(v)]
-            typef = "fig:"
-        else:
-            res.append([k, v])
+    value, res = get_value(kv, u"caption")
+    if value is not None:
+        caption = [Str(value)]
+        typef = "fig:"
 
     return caption, typef, res
 
