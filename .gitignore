@@ -1,0 +1,10 @@
+*~
+*.pyc
+__pycache__/
+*-images/
+tmp_ly/
+*-sample.pdf
+.idea/
+examples/lyluatex.lua
+examples/lyluatex.sty
+examples/plantuml.jar

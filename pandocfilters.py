@@ -7,11 +7,73 @@ Functions to aid writing python scripts that process the pandoc
 AST serialized as JSON.
 """
 
-from functools import reduce
-import sys
-import json
-import io
 import codecs
+import hashlib
+import io
+import json
+import os
+import sys
+
+
+# some utility-functions: make it easier to create your own filters
+
+
+def get_filename4code(module, content, ext=None):
+    """Generate filename based on content
+
+    The function ensures that the (temporary) directory exists, so that the
+    file can be written.
+
+    Example:
+        filename = get_filename4code("myfilter", code)
+    """
+    imagedir = module + "-images"
+    fn = hashlib.sha1(content.encode(sys.getfilesystemencoding())).hexdigest()
+    try:
+        os.mkdir(imagedir)
+        sys.stderr.write('Created directory ' + imagedir + '\n')
+    except OSError:
+        pass
+    if ext:
+        fn += "." + ext
+    return os.path.join(imagedir, fn)
+
+
+def get_caption(kv):
+    """get caption from the keyvalues (options)
+
+    Example:
+      if key == 'CodeBlock':
+        [[ident, classes, keyvals], code] = value
+        caption, typef, keyvals = get_caption(keyvals)
+        ...
+        return Para([Image([ident, [], keyvals], caption, [filename, typef])])
+    """
+    res = []
+    caption = []
+    typef = ""
+    for k, v in kv:
+        if k == u"caption":
+            caption = [Str(v)]
+            typef = "fig:"
+        else:
+            res.append([k, v])
+
+    return caption, typef, res
+
+
+def get_extension(format, default, **alternates):
+    """get the extension for the result, needs a default and some specialisations
+
+    Example:
+      filetype = get_extension(format, "png", html="svg", latex="eps")
+    """
+    try:
+        return alternates[format]
+    except KeyError:
+        return default
+
+# end of utilities
 
 
 def walk(x, action, format, meta):
@@ -44,35 +106,52 @@ def walk(x, action, format, meta):
 def toJSONFilter(action):
     toJSONFilters([action])
 
+
 def toJSONFilters(actions):
-    """Converts a list of actions into a filter that reads a JSON-formatted
-    pandoc document from stdin, transforms it by walking the tree
-    with the actions, and returns a new JSON-formatted pandoc document
-    to stdout.  The argument is a list of functions action(key, value, format, meta),
-    where key is the type of the pandoc object (e.g. 'Str', 'Para'),
-    value is the contents of the object (e.g. a string for 'Str',
-    a list of inline elements for 'Para'), format is the target
-    output format (which will be taken for the first command line
-    argument if present), and meta is the document's metadata.
-    If the function returns None, the object to which it applies
-    will remain unchanged.  If it returns an object, the object will
-    be replaced.    If it returns a list, the list will be spliced in to
-    the list to which the target object belongs.    (So, returning an
-    empty list deletes the object.)
+    """Generate a JSON-to-JSON filter
+
+    The filter:
+
+    * reads a JSON-formatted pandoc document from stdin
+    * transforms it by walking the tree and performing the actions
+    * returns a new JSON-formatted pandoc document to stdout
+
+    The argument `actions` is a list of functions of the form
+    `action(key, value, format, meta)`, where:
+
+    * `key` is the type of the pandoc object (e.g. 'Str', 'Para') `value` is
+    * the contents of the object (e.g. a string for 'Str', a list of
+      inline elements for 'Para')
+    * `format` is the target output format (which will be taken for the first
+      command line argument if present)
+    * `meta` is the document's metadata
+
+    The return is either:
+
+    * `None`: this means that the object should remain unchanged
+    * a pandoc object: this will replace the original object
+    * a list of pandoc objects: these will replace the original object; the
+      list is merged with the neighbors of the orignal objects (spliced into
+      the list the original object belongs to); returning an empty list deletes
+      the object
     """
-    try: 
+    try:
         input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
     except AttributeError:
         # Python 2 does not have sys.stdin.buffer.
-        # REF: http://stackoverflow.com/questions/2467928/python-unicodeencodeerror-when-reading-from-stdin
+        # REF: https://stackoverflow.com/questions/2467928/python-unicodeencode
         input_stream = codecs.getreader("utf-8")(sys.stdin)
-        
+
     doc = json.loads(input_stream.read())
     if len(sys.argv) > 1:
         format = sys.argv[1]
     else:
         format = ""
-    altered = reduce(lambda x, action: walk(x, action, format, doc[0]['unMeta']), actions, doc)
+
+    altered = doc
+    for action in actions:
+        altered = walk(altered, action, format, doc[0]['unMeta'])
+
     json.dump(altered, sys.stdout)
 
 
@@ -90,6 +169,8 @@ def stringify(x):
         elif key == 'Math':
             result.append(val[1])
         elif key == 'LineBreak':
+            result.append(" ")
+        elif key == 'SoftBreak':
             result.append(" ")
         elif key == 'Space':
             result.append(" ")
@@ -113,9 +194,8 @@ def elt(eltType, numargs):
     def fun(*args):
         lenargs = len(args)
         if lenargs != numargs:
-            raise ValueError(eltType + ' expects '
-                             + str(numargs) + ' arguments, but given '
-                             + str(lenargs))
+            raise ValueError(eltType + ' expects ' + str(numargs) +
+                             ' arguments, but given ' + str(lenargs))
         if numargs == 0:
             xs = []
         elif len(args) == 1:

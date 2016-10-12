@@ -7,23 +7,17 @@ package is available.  Also assumes that ImageMagick's convert
 is in the path. Images are put in the tikz-images directory.
 """
 
-import hashlib
-import re
 import os
-import sys
+import re
 import shutil
-from pandocfilters import toJSONFilter, Para, Image
-from subprocess import Popen, PIPE, call
+import sys
+from subprocess import call
 from tempfile import mkdtemp
 
-imagedir = "tikz-images"
+from pandocfilters import toJSONFilter, Para, Image, get_filename4code, get_extension
 
 
-def sha1(x):
-    return hashlib.sha1(x.encode(sys.getfilesystemencoding())).hexdigest()
-
-
-def tikz2image(tikz, filetype, outfile):
+def tikz2image(tikz_src, filetype, outfile):
     tmpdir = mkdtemp()
     olddir = os.getcwd()
     os.chdir(tmpdir)
@@ -32,10 +26,10 @@ def tikz2image(tikz, filetype, outfile):
              \\usepackage{tikz}
              \\begin{document}
              """)
-    f.write(tikz)
+    f.write(tikz_src)
     f.write("\n\\end{document}\n")
     f.close()
-    p = call(["pdflatex", 'tikz.tex'], stdout=sys.stderr)
+    call(["pdflatex", 'tikz.tex'], stdout=sys.stderr)
     os.chdir(olddir)
     if filetype == 'pdf':
         shutil.copyfile(tmpdir + '/tikz.pdf', outfile + '.pdf')
@@ -44,24 +38,14 @@ def tikz2image(tikz, filetype, outfile):
     shutil.rmtree(tmpdir)
 
 
-def tikz(key, value, format, meta):
+def tikz(key, value, format, _):
     if key == 'RawBlock':
         [fmt, code] = value
         if fmt == "latex" and re.match("\\\\begin{tikzpicture}", code):
-            outfile = imagedir + '/' + sha1(code)
-            if format == "html":
-                filetype = "png"
-            elif format == "latex":
-                filetype = "pdf"
-            else:
-                filetype = "png"
+            outfile = get_filename4code("tikz", code)
+            filetype = get_extension(format, "png", html="png", latex="pdf")
             src = outfile + '.' + filetype
             if not os.path.isfile(src):
-                try:
-                    os.mkdir(imagedir)
-                    sys.stderr.write('Created directory ' + imagedir + '\n')
-                except OSError:
-                    pass
                 tikz2image(code, filetype, outfile)
                 sys.stderr.write('Created image ' + src + '\n')
             return Para([Image(['', [], []], [], [src, ""])])
