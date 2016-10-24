@@ -30,6 +30,10 @@ that breaks backwards compatibility. Consequently, you should use:
 - pandocfilters version <= 1.2.4 for pandoc versions 1.12--1.15, and
 - pandocfilters version >= 1.3.0 for pandoc versions >= 1.16.
 
+Pandoc 1.17.3 (pandoc-types 1.17.*) introduced a new JSON format.
+pandocfilters 1.4.0 should work with both the old and the new
+format.
+
 Installing
 --------------
 Run this inside the present directory::
