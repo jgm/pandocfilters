@@ -90,7 +90,8 @@ def walk(x, action, format, meta):
         array = []
         for item in x:
             if isinstance(item, dict) and 't' in item:
-                res = action(item['t'], item['c'], format, meta)
+                res = action(item['t'],
+                             item['c'] if 'c' in item else None, format, meta)
                 if res is None:
                     array.append(walk(item, action, format, meta))
                 elif isinstance(res, list):
@@ -154,9 +155,15 @@ def toJSONFilters(actions):
     else:
         format = ""
 
+    if 'meta' in doc:
+        meta = doc['meta']
+    elif doc[0]:  # old API
+        meta = doc[0]['unMeta']
+    else:
+        meta = {}
     altered = doc
     for action in actions:
-        altered = walk(altered, action, format, doc[0]['unMeta'])
+        altered = walk(altered, action, format, meta)
 
     json.dump(altered, sys.stdout)
 
