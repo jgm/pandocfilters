@@ -149,12 +149,18 @@ def toJSONFilters(actions):
         # REF: https://stackoverflow.com/questions/2467928/python-unicodeencode
         input_stream = codecs.getreader("utf-8")(sys.stdin)
 
-    doc = json.loads(input_stream.read())
+    source = input_stream.read()
     if len(sys.argv) > 1:
         format = sys.argv[1]
     else:
         format = ""
 
+    sys.stdout.write(applyJSONFilters(actions, source, format))
+
+def applyJSONFilters(actions, source, format=""):
+    
+    doc = json.loads(source)
+    
     if 'meta' in doc:
         meta = doc['meta']
     elif doc[0]:  # old API
@@ -165,8 +171,8 @@ def toJSONFilters(actions):
     for action in actions:
         altered = walk(altered, action, format, meta)
 
-    json.dump(altered, sys.stdout)
-
+    return json.dumps(altered)
+    
 
 def stringify(x):
     """Walks the tree x and returns concatenated string content,
