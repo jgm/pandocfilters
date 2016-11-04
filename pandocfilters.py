@@ -115,7 +115,7 @@ def toJSONFilter(action):
 
 
 def toJSONFilters(actions):
-    """Generate a JSON-to-JSON filter
+    """Generate a JSON-to-JSON filter from stdin to stdout
 
     The filter:
 
@@ -158,7 +158,40 @@ def toJSONFilters(actions):
     sys.stdout.write(applyJSONFilters(actions, source, format))
 
 def applyJSONFilters(actions, source, format=""):
+    """Walk through JSON structure and apply filters
     
+    This:
+
+    * reads a JSON-formatted pandoc document from a source string
+    * transforms it by walking the tree and performing the actions
+    * returns a new JSON-formatted pandoc document as a string 
+    
+    The argument `actions` is a list of functions of the form
+    `action(key, value, format, meta)`, where:
+
+    * `key` is the type of the pandoc object (e.g. 'Str', 'Para') `value` is
+    * the contents of the object (e.g. a string for 'Str', a list of
+      inline elements for 'Para')
+    * `format` is the target output format (which will be taken for the first
+      command line argument if present)
+    * `meta` is the document's metadata
+
+    The return of an action is either:
+
+    * `None`: this means that the object should remain unchanged
+    * a pandoc object: this will replace the original object
+    * a list of pandoc objects: these will replace the original object; the
+      list is merged with the neighbors of the orignal objects (spliced into
+      the list the original object belongs to); returning an empty list deletes
+      the object
+    
+    The argument `source` is a string encoded JSON object
+    
+    The argument `format` is a string describing the output format
+    
+    Returns a the new JSON-formatted pandoc document
+    """
+
     doc = json.loads(source)
     
     if 'meta' in doc:
