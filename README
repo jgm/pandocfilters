@@ -50,7 +50,7 @@ The main functions ``pandocfilters`` exports are
 
 -  ``walk(x, action, format, meta)``
 
-   "Walk a tree, applying an action to every object. Returns a modified
+   Walk a tree, applying an action to every object. Returns a modified
    tree. An action is a function of the form
    ``action(key, value, format, meta)``, where:
 
