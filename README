@@ -46,36 +46,80 @@ Or install from PyPI::
 
 Available functions
 ----------------------
-The ``pandocfilters`` module exports the following functions:
+The main functions ``pandocfilters`` exports are
 
-``walk(x, action, format, meta)``
-  Walk a tree, applying an action to every object.
-  Returns a modified tree.
+-  ``walk(x, action, format, meta)``
 
-``toJSONFilter(action)``
-  Converts an action into a filter that reads a JSON-formatted
-  pandoc document from stdin, transforms it by walking the tree
-  with the action, and returns a new JSON-formatted pandoc document
-  to stdout.  The argument is a function ``action(key, value, format, meta)``,
-  where key is the type of the pandoc object (e.g. ``'Str'``, ``'Para'``),
-  value is the contents of the object (e.g. a string for ``'Str'``,
-  a list of inline elements for ``'Para'``), format is the target
-  output format (which will be taken for the first command line
-  argument if present), and meta is the document's metadata.
-  If the function returns None, the object to which it applies
-  will remain unchanged.  If it returns an object, the object will
-  be replaced.  If it returns a list, the list will be spliced in to
-  the list to which the target object belongs.  (So, returning an
-  empty list deletes the object.)
+   "Walk a tree, applying an action to every object. Returns a modified
+   tree. An action is a function of the form
+   ``action(key, value, format, meta)``, where:
 
-``stringify(x)``
-  Walks the tree ``x`` and returns concatenated string content,
-  leaving out all formatting.
+   -  ``key`` is the type of the pandoc object (e.g. 'Str', 'Para')
+      ``value`` is
+   -  the contents of the object (e.g. a string for 'Str', a list of
+      inline elements for 'Para')
+   -  ``format`` is the target output format (as supplied by the
+      ``format`` argument of ``walk``)
+   -  ``meta`` is the document's metadata
 
-``attributes(attrs)``
-  Returns an attribute list, constructed from the
-  dictionary ``attrs``.
+   The return of an action is either:
 
+   -  ``None``: this means that the object should remain unchanged
+   -  a pandoc object: this will replace the original object
+   -  a list of pandoc objects: these will replace the original object;
+      the list is merged with the neighbors of the orignal objects
+      (spliced into the list the original object belongs to); returning
+      an empty list deletes the object
+
+-  ``toJSONFilter(action)``
+
+   Like ``toJSONFilters``, but takes a single action as argument.
+
+-  ``toJSONFilters(actions)``
+
+   Generate a JSON-to-JSON filter from stdin to stdout
+
+   The filter:
+
+   -  reads a JSON-formatted pandoc document from stdin
+   -  transforms it by walking the tree and performing the actions
+   -  returns a new JSON-formatted pandoc document to stdout
+
+   The argument ``actions`` is a list of functions of the form
+   ``action(key, value, format, meta)``, as described in more detail
+   under ``walk``.
+
+   This function calls ``applyJSONFilters``, with the ``format``
+   argument provided by the first command-line argument, if present.
+   (Pandoc sets this by default when calling filters.)
+
+-  ``applyJSONFilters(actions, source, format="")``
+
+   Walk through JSON structure and apply filters
+
+   This:
+
+   -  reads a JSON-formatted pandoc document from a source string
+   -  transforms it by walking the tree and performing the actions
+   -  returns a new JSON-formatted pandoc document as a string
+
+   The ``actions`` argument is a list of functions (see ``walk`` for a
+   full description).
+
+   The argument ``source`` is a string encoded JSON object.
+
+   The argument ``format`` is a string describing the output format.
+
+   Returns a the new JSON-formatted pandoc document.
+
+-  ``stringify(x)``
+
+   Walks the tree x and returns concatenated string content, leaving out
+   all formatting.
+
+-  ``attributes(attrs)``
+
+   Returns an attribute list, constructed from the dictionary attrs.
 How to use
 --------------
 Most users will only need ``toJSONFilter``.  Here is a simple example
