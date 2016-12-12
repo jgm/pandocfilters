@@ -245,7 +245,7 @@ def elt(eltType, numargs):
         elif len(args) == 1:
             xs = args[0]
         else:
-            xs = args
+            xs = list(args)
         return {'t': eltType, 'c': xs}
     return fun
 
