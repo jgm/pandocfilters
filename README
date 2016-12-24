@@ -55,8 +55,7 @@ The main functions ``pandocfilters`` exports are
    ``action(key, value, format, meta)``, where:
 
    -  ``key`` is the type of the pandoc object (e.g. 'Str', 'Para')
-      ``value`` is
-   -  the contents of the object (e.g. a string for 'Str', a list of
+   -  ``value`` is the contents of the object (e.g. a string for 'Str', a list of
       inline elements for 'Para')
    -  ``format`` is the target output format (as supplied by the
       ``format`` argument of ``walk``)
