@@ -241,7 +241,7 @@ def elt(eltType, numargs):
             raise ValueError(eltType + ' expects ' + str(numargs) +
                              ' arguments, but given ' + str(lenargs))
         if numargs == 0:
-            xs = []
+            return {'t': eltType}
         elif len(args) == 1:
             xs = args[0]
         else:
