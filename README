@@ -119,8 +119,9 @@ The main functions ``pandocfilters`` exports are
 -  ``attributes(attrs)``
 
    Returns an attribute list, constructed from the dictionary attrs.
+
 How to use
---------------
+----------
 Most users will only need ``toJSONFilter``.  Here is a simple example
 of its use::
 
