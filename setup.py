@@ -22,6 +22,7 @@ setup(name='pandocfilters',
           'License :: OSI Approved :: BSD License',
           'Operating System :: OS Independent',
           'Programming Language :: Python',
-          'Topic :: Text Processing :: Filters'
+          'Topic :: Text Processing :: Filters',
+          'Programming Language :: Python :: 3'
       ],
       )
