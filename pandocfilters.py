@@ -38,6 +38,15 @@ def get_filename4code(module, content, ext=None):
         fn += "." + ext
     return os.path.join(imagedir, fn)
 
+def get_value(kv, key, value = None):
+    """get value from the keyvalues (options)"""
+    res = []
+    for k, v in kv:
+        if k == key:
+            value = v
+        else:
+            res.append([k, v])
+    return value, res
 
 def get_caption(kv):
     """get caption from the keyvalues (options)
@@ -49,15 +58,12 @@ def get_caption(kv):
         ...
         return Para([Image([ident, [], keyvals], caption, [filename, typef])])
     """
-    res = []
     caption = []
     typef = ""
-    for k, v in kv:
-        if k == u"caption":
-            caption = [Str(v)]
-            typef = "fig:"
-        else:
-            res.append([k, v])
+    value, res = get_value(kv, u"caption")
+    if value is not None:
+        caption = [Str(value)]
+        typef = "fig:"
 
     return caption, typef, res
 
@@ -78,13 +84,31 @@ def get_extension(format, default, **alternates):
 
 def walk(x, action, format, meta):
     """Walk a tree, applying an action to every object.
-    Returns a modified tree.
+    Returns a modified tree.  An action is a function of the form
+    `action(key, value, format, meta)`, where:
+
+    * `key` is the type of the pandoc object (e.g. 'Str', 'Para') `value` is
+    * the contents of the object (e.g. a string for 'Str', a list of
+      inline elements for 'Para')
+    * `format` is the target output format (as supplied by the
+      `format` argument of `walk`)
+    * `meta` is the document's metadata
+
+    The return of an action is either:
+
+    * `None`: this means that the object should remain unchanged
+    * a pandoc object: this will replace the original object
+    * a list of pandoc objects: these will replace the original object; the
+      list is merged with the neighbors of the orignal objects (spliced into
+      the list the original object belongs to); returning an empty list deletes
+      the object
     """
     if isinstance(x, list):
         array = []
         for item in x:
             if isinstance(item, dict) and 't' in item:
-                res = action(item['t'], item['c'], format, meta)
+                res = action(item['t'],
+                             item['c'] if 'c' in item else None, format, meta)
                 if res is None:
                     array.append(walk(item, action, format, meta))
                 elif isinstance(res, list):
@@ -96,20 +120,20 @@ def walk(x, action, format, meta):
                 array.append(walk(item, action, format, meta))
         return array
     elif isinstance(x, dict):
-        obj = {}
         for k in x:
-            obj[k] = walk(x[k], action, format, meta)
-        return obj
+            x[k] = walk(x[k], action, format, meta)
+        return x
     else:
         return x
 
-
 def toJSONFilter(action):
+    """Like `toJSONFilters`, but takes a single action as argument.
+    """
     toJSONFilters([action])
 
 
 def toJSONFilters(actions):
-    """Generate a JSON-to-JSON filter
+    """Generate a JSON-to-JSON filter from stdin to stdout
 
     The filter:
 
@@ -118,23 +142,13 @@ def toJSONFilters(actions):
     * returns a new JSON-formatted pandoc document to stdout
 
     The argument `actions` is a list of functions of the form
-    `action(key, value, format, meta)`, where:
+    `action(key, value, format, meta)`, as described in more
+    detail under `walk`.
 
-    * `key` is the type of the pandoc object (e.g. 'Str', 'Para') `value` is
-    * the contents of the object (e.g. a string for 'Str', a list of
-      inline elements for 'Para')
-    * `format` is the target output format (which will be taken for the first
-      command line argument if present)
-    * `meta` is the document's metadata
-
-    The return is either:
-
-    * `None`: this means that the object should remain unchanged
-    * a pandoc object: this will replace the original object
-    * a list of pandoc objects: these will replace the original object; the
-      list is merged with the neighbors of the orignal objects (spliced into
-      the list the original object belongs to); returning an empty list deletes
-      the object
+    This function calls `applyJSONFilters`, with the `format`
+    argument provided by the first command-line argument,
+    if present.  (Pandoc sets this by default when calling
+    filters.)
     """
     try:
         input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
@@ -143,17 +157,46 @@ def toJSONFilters(actions):
         # REF: https://stackoverflow.com/questions/2467928/python-unicodeencode
         input_stream = codecs.getreader("utf-8")(sys.stdin)
 
-    doc = json.loads(input_stream.read())
+    source = input_stream.read()
     if len(sys.argv) > 1:
         format = sys.argv[1]
     else:
         format = ""
 
+    sys.stdout.write(applyJSONFilters(actions, source, format))
+
+def applyJSONFilters(actions, source, format=""):
+    """Walk through JSON structure and apply filters
+
+    This:
+
+    * reads a JSON-formatted pandoc document from a source string
+    * transforms it by walking the tree and performing the actions
+    * returns a new JSON-formatted pandoc document as a string
+
+    The `actions` argument is a list of functions (see `walk`
+    for a full description).
+
+    The argument `source` is a string encoded JSON object.
+
+    The argument `format` is a string describing the output format.
+
+    Returns a the new JSON-formatted pandoc document.
+    """
+
+    doc = json.loads(source)
+
+    if 'meta' in doc:
+        meta = doc['meta']
+    elif doc[0]:  # old API
+        meta = doc[0]['unMeta']
+    else:
+        meta = {}
     altered = doc
     for action in actions:
-        altered = walk(altered, action, format, doc[0]['unMeta'])
+        altered = walk(altered, action, format, meta)
 
-    json.dump(altered, sys.stdout)
+    return json.dumps(altered)
 
 
 def stringify(x):
@@ -202,7 +245,7 @@ def elt(eltType, numargs):
         elif len(args) == 1:
             xs = args[0]
         else:
-            xs = args
+            xs = list(args)
         return {'t': eltType, 'c': xs}
     return fun
 
