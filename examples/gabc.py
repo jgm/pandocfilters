@@ -8,12 +8,14 @@ and a reasonable selection of LaTeX packages are installed.
 
 import os
 from sys import getfilesystemencoding, stderr
-from subprocess import Popen, call, PIPE, DEVNULL
+from subprocess import Popen, call, PIPE
+from itertools import chain
+from glob import iglob
 from hashlib import sha1
 from pandocfilters import toJSONFilter, RawBlock, RawInline, Para, Image
 
 
-STDERR = DEVNULL
+STDERR = stderr
 IMAGEDIR = "tmp_gabc"
 LATEX_DOC = """\\documentclass{article}
 \\usepackage{libertine}
@@ -86,8 +88,13 @@ def latex2png(snippet, outfile):
         doc.write(LATEX_DOC % (snippet))
     environment = os.environ
     environment['shell_escape_commands'] = \
-        "bibtex,bibtex8,kpsewhich,makeindex,mpost,repstopdf,\
-        gregorio,gregorio-4_2_0"
+        "bibtex,bibtex8,kpsewhich,makeindex,mpost,repstopdf," + \
+        ','.join(
+            os.path.basename(n) for n in chain.from_iterable(
+                iglob(os.path.join(chemin, 'gregorio*'))
+                for chemin in os.environ["PATH"].split(os.pathsep)
+            )
+        )
     proc = Popen(
         ["lualatex", '-output-directory=' + IMAGEDIR, texdocument],
         stdin=PIPE,
