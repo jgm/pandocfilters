@@ -71,7 +71,7 @@ The main functions ``pandocfilters`` exports are
    -  ``None``: this means that the object should remain unchanged
    -  a pandoc object: this will replace the original object
    -  a list of pandoc objects: these will replace the original object;
-      the list is merged with the neighbors of the orignal objects
+      the list is merged with the neighbors of the original objects
       (spliced into the list the original object belongs to); returning
       an empty list deletes the object
 
