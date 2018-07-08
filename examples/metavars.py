@@ -22,7 +22,7 @@ def metavars(key, value, format, meta):
                 return Span(attributes({'class': 'interpolated',
                                         'field': field}),
                             result['c'])
-            elif 'MetaString' in result[t]:
+            elif 'MetaString' in result['t']:
                 return Str(result['c'])
 
 if __name__ == "__main__":
