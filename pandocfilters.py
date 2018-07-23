@@ -249,6 +249,12 @@ def elt(eltType, numargs):
         return {'t': eltType, 'c': xs}
     return fun
 
+
+# Constructors for meta elements
+
+MetaInlines = elt('MetaInlines', 1)
+MetaList = elt('MetaList', 1)
+
 # Constructors for block elements
 
 Plain = elt('Plain', 1)
