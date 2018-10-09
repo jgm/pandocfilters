@@ -13,6 +13,7 @@ setup(name='pandocfilters',
       author_email='fiddlosopher@gmail.com',
       url='http://github.com/jgm/pandocfilters',
       py_modules=['pandocfilters'],
+      license="BSD-3-Clause",
       keywords=['pandoc'],
       python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
       classifiers=[
