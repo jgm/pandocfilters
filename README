@@ -114,7 +114,7 @@ The main functions ``pandocfilters`` exports are
 
    The argument ``format`` is a string describing the output format.
 
-   Returns a the new JSON-formatted pandoc document.
+   Returns a new JSON-formatted pandoc document.
 
 -  ``stringify(x)``
 
