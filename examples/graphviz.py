@@ -23,7 +23,12 @@ def graphviz(key, value, format, _):
             filetype = get_extension(format, "png", html="png", latex="pdf")
             dest = get_filename4code("graphviz", code, filetype)
 
-            if not os.path.isfile(dest):
+            filename = ""
+            for a,b in keyvals:
+                if(a == "filename"):
+                    filename = "graphviz-images/"+b+"."+filetype
+                    dest = filename
+            if (filename != "") or (not os.path.isfile(dest)):
                 g = pygraphviz.AGraph(string=code)
                 g.layout()
                 g.draw(dest, prog=prog)
