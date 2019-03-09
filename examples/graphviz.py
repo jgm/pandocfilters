@@ -9,6 +9,7 @@ Needs pygraphviz
 
 import os
 import sys
+import string
 
 import pygraphviz
 
@@ -22,12 +23,14 @@ def graphviz(key, value, format, _):
             prog, keyvals = get_value(keyvals, u"prog", u"dot")
             filetype = get_extension(format, "png", html="png", latex="pdf")
             dest = get_filename4code("graphviz", code, filetype)
-
             filename = ""
-            for a,b in keyvals:
+            for a,fname in keyvals:
                 if(a == "filename"):
-                    filename = "graphviz-images/"+b+"."+filetype
-                    dest = filename
+                    valid_chars = "-_ %s%s" % (string.ascii_letters, string.digits)
+                    fname = ''.join(x for x in fname if x in valid_chars)
+                    if fname != "":
+                        filename = "graphviz-images/"+fname+"."+filetype
+                        dest = filename
             if (filename != "") or (not os.path.isfile(dest)):
                 g = pygraphviz.AGraph(string=code)
                 g.layout()
