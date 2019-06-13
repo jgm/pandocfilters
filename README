@@ -203,6 +203,10 @@ for developing your own pandocfilters.
     Pandoc filter to process code blocks with class ``plantuml`` to images.
     Needs `plantuml.jar` from http://plantuml.com/.
 
+``ditaa.py``
+    Pandoc filter to process code blocks with class ``ditaa`` to images.
+    Needs `ditaa.jar` from http://ditaa.sourceforge.net/.
+
 ``theorem.py``
     Pandoc filter to convert divs with ``class="theorem"`` to LaTeX theorem
     environments in LaTeX output, and to numbered theorems in HTML
