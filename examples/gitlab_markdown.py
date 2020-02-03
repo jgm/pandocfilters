@@ -9,7 +9,7 @@ Pandoc filter to convert gitlab flavored markdown to pandoc flavored markdown
 def gitlab_markdown(key, value, format, meta):
     if key == "CodeBlock":
         [[identification, classes, keyvals], code] = value
-        if classes[0] == "math":
+        if len(classes) > 0 and classes[0] == "math":
             fmt = {'t': 'DisplayMath',
                    'c': []}
             return Para([Math(fmt, code)])
