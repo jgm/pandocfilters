@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from pandocfilters import toJSONFilter, Math, Para
 """
 Pandoc filter to convert gitlab flavored markdown to pandoc flavored markdown
