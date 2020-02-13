@@ -5,6 +5,7 @@ __pycache__/
 tmp_ly/
 *-sample.pdf
 .idea/
+*.egg-info/
 examples/lyluatex.lua
 examples/lyluatex.sty
 examples/plantuml.jar
