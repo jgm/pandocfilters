@@ -120,9 +120,7 @@ def walk(x, action, format, meta):
                 array.append(walk(item, action, format, meta))
         return array
     elif isinstance(x, dict):
-        for k in x:
-            x[k] = walk(x[k], action, format, meta)
-        return x
+        return {k: walk(v, action, format, meta) for k, v in x.items()}
     else:
         return x
 
