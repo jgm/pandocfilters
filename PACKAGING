@@ -1,5 +1,5 @@
 Notes on uploading this package to PyPI
 
-python setup.py sdist upload
+python3 setup.py sdist
+python3 -m twine upload dist/*
 
-In upload step, can also use --sign to sign with GPG.
