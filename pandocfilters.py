@@ -13,27 +13,30 @@ import io
 import json
 import os
 import sys
+import atexit
+import shutil
+import tempfile
 
 
 # some utility-functions: make it easier to create your own filters
 
 
-def get_filename4code(module, content, ext=None):
+def get_filename4code(module, content, ext=None, remove=True):
     """Generate filename based on content
 
     The function ensures that the (temporary) directory exists, so that the
     file can be written.
 
+    An atexit function gets registered to remove the temporary directory at the
+    end of the script, unless disabled with the remove parameter.
+
     Example:
         filename = get_filename4code("myfilter", code)
     """
-    imagedir = module + "-images"
+    imagedir = tempfile.mkdtemp(prefix=module)
+    if remove:
+        atexit.register(lambda: shutil.rmtree(imagedir))
     fn = hashlib.sha1(content.encode(sys.getfilesystemencoding())).hexdigest()
-    try:
-        os.mkdir(imagedir)
-        sys.stderr.write('Created directory ' + imagedir + '\n')
-    except OSError:
-        pass
     if ext:
         fn += "." + ext
     return os.path.join(imagedir, fn)
