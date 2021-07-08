@@ -55,8 +55,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - uses: xu-cheng/texlive-action/full@v1
       name: Setup examples' dependencies—texlive
-    - name: Install examples' dependencies—abcm2ps
-      run: sudo apt install abcm2ps
+    - name: Install examples' dependencies
+      run: sudo apt install abcm2ps graphviz graphviz-dev
     - name: Install dependencies—pip
       # pygraphviz for graphviz.py
       run: |
