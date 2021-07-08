@@ -28,12 +28,10 @@ def plantuml(key, value, format, _):
             dest = filename + '.' + filetype
 
             if not os.path.isfile(dest):
-                encoding = sys.getfilesystemencoding()
-                txt = code.encode(encoding)
-                if not txt.startswith("@start".encode(encoding)):
-                    txt = "@startuml\n" + txt + "\n@enduml\n"
+                if not code.startswith("@start"):
+                    code = "@startuml\n" + code + "\n@enduml\n"
                 with open(src, "w") as f:
-                    f.write(txt)
+                    f.write(code)
 
                 call(["java", "-jar", "plantuml.jar", "-t"+filetype, src])
                 sys.stderr.write('Created image ' + dest + '\n')

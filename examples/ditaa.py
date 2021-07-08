@@ -28,9 +28,8 @@ def ditaa(key, value, format, _):
             dest = filename + '.' + filetype
 
             if not os.path.isfile(dest):
-                txt = code.encode(sys.getfilesystemencoding())
                 with open(src, "w") as f:
-                    f.write(txt)
+                    f.write(code)
 
                 call(["java", "-jar", "ditaa.jar", src])
                 pprint.pprint(['Created image ', dest, 'typef=', typef, 'ident=', ident,  'keyvals=', keyvals, 'caption=', caption], sys.stderr)
