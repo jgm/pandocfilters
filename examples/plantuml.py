@@ -28,8 +28,9 @@ def plantuml(key, value, format, _):
             dest = filename + '.' + filetype
 
             if not os.path.isfile(dest):
-                txt = code.encode(sys.getfilesystemencoding())
-                if not txt.startswith("@start"):
+                encoding = sys.getfilesystemencoding()
+                txt = code.encode(encoding)
+                if not txt.startswith("@start".encode(encoding)):
                     txt = "@startuml\n" + txt + "\n@enduml\n"
                 with open(src, "w") as f:
                     f.write(txt)
