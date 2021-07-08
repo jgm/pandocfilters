@@ -20,6 +20,7 @@ Use this
 
 to get 
 
+```latex
 \begin{tikzpicture}
 
 \def \n {5}
@@ -33,5 +34,6 @@ to get
     arc ({360/\n * (\s - 1)+\margin}:{360/\n * (\s)-\margin}:\radius);
 }
 \end{tikzpicture}
+```
 
 

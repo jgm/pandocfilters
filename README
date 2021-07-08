@@ -21,6 +21,11 @@ and `the tutorial on writing filters`__.
 
 __ http://johnmacfarlane.net/pandoc/scripting.html
 
+For an alternative library for writing pandoc filters, with
+a more "Pythonic" design, see `panflute`__.
+
+__ https://github.com/sergiocorreia/panflute
+
 Compatibility
 ----------------
 Pandoc 1.16 introduced link and image `attributes` to the existing
@@ -66,7 +71,7 @@ The main functions ``pandocfilters`` exports are
    -  ``None``: this means that the object should remain unchanged
    -  a pandoc object: this will replace the original object
    -  a list of pandoc objects: these will replace the original object;
-      the list is merged with the neighbors of the orignal objects
+      the list is merged with the neighbors of the original objects
       (spliced into the list the original object belongs to); returning
       an empty list deletes the object
 
@@ -109,7 +114,7 @@ The main functions ``pandocfilters`` exports are
 
    The argument ``format`` is a string describing the output format.
 
-   Returns a the new JSON-formatted pandoc document.
+   Returns a new JSON-formatted pandoc document.
 
 -  ``stringify(x)``
 
@@ -119,8 +124,9 @@ The main functions ``pandocfilters`` exports are
 -  ``attributes(attrs)``
 
    Returns an attribute list, constructed from the dictionary attrs.
+
 How to use
---------------
+----------
 Most users will only need ``toJSONFilter``.  Here is a simple example
 of its use::
 
@@ -155,6 +161,10 @@ for developing your own pandocfilters.
 ``caps.py``
     Pandoc filter to convert all regular text to uppercase. Code, link
     URLs, etc. are not affected.
+
+``blockdiag.py``
+    Pandoc filter to process code blocks with class "blockdiag" into
+    generated images. Needs utils from http://blockdiag.com.
 
 ``comments.py``
     Pandoc filter that causes everything between
