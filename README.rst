@@ -222,15 +222,16 @@ for developing your own pandocfilters.
     package is available. Also assumes that ImageMagick's convert is in
     the path. Images are put in the ``tikz-images`` directory.
 
-Cleanup after run
+API documentation
 -----------------
 
-By default most filters create a directory ``...-images`` to save temporary
+By default most filters use ``get_filename4code`` to
+create a directory ``...-images`` to save temporary
 files. This directory doesn't get removed as it can be used as a cache so that
 later pandoc runs don't have to recreate files if they already exist. The
 directory is generated in the current directory.
 
-If you prefer to have a clean directory after the run of the pandoc filter, you
-can set an environment variable ``PANDOCFILTER_CLEANUP`` to the value ``true``
-which forces the code to create a real temporary directory that will be removed
-after the filter has finished.
+If you prefer to have a clean directory after running pandoc filters, you
+can set an environment variable ``PANDOCFILTER_CLEANUP`` to any non-empty value such as `1`
+which forces the code to create a temporary directory that will be removed
+by the end of execution.
