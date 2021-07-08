@@ -53,10 +53,8 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: xu-cheng/texlive-action/full@v1
-      name: Setup examples' dependencies—texlive
     - name: Install examples' dependencies
-      run: sudo apt install abcm2ps graphviz graphviz-dev
+      run: sudo apt install abcm2ps graphviz graphviz-dev texlive-latex-base
     - name: Install dependencies—pip
       # pygraphviz for graphviz.py
       run: |
