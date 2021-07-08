@@ -54,7 +54,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install examples' dependencies
-      run: sudo apt install abcm2ps graphviz graphviz-dev texlive-latex-base
+      run: sudo apt install abcm2ps graphviz graphviz-dev texlive-latex-base latex-xcolor
     - name: Install dependencies—pip
       # pygraphviz for graphviz.py
       run: |
