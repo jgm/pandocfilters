@@ -13,6 +13,9 @@ import io
 import json
 import os
 import sys
+import atexit
+import shutil
+import tempfile
 
 
 # some utility-functions: make it easier to create your own filters
@@ -22,18 +25,31 @@ def get_filename4code(module, content, ext=None):
     """Generate filename based on content
 
     The function ensures that the (temporary) directory exists, so that the
-    file can be written.
+    file can be written. In the usual case the directory doesn't get removed
+    afterwards, so a plugin can use the directory for caching purposes and
+    decide not to recreate an already existing file.
+
+    In case the user preferres the files to be actual temporary files, he can
+    set an environment variable `PANDOCFILTER_CLEANUP` to the value `true` to
+    make sure the directory is created in a temporary location and removed
+    after finishing the filter.  In this case no caching whatsoever can be
+    done.
 
     Example:
         filename = get_filename4code("myfilter", code)
     """
-    imagedir = module + "-images"
+    if os.getenv('PANDOCFILTER_CLEANUP') == 'true':
+        imagedir = tempfile.mkdtemp(prefix=module)
+        atexit.register(lambda: shutil.rmtree(imagedir))
+    else:
+        imagedir = module + "-images"
+        try:
+            os.mkdir(imagedir)
+            sys.stderr.write('Created directory "' + imagedir + '"\n')
+        except OSError:
+            sys.stderr.write('Could not create directory "' + imagedir + '"\n')
+            raise
     fn = hashlib.sha1(content.encode(sys.getfilesystemencoding())).hexdigest()
-    try:
-        os.mkdir(imagedir)
-        sys.stderr.write('Created directory ' + imagedir + '\n')
-    except OSError:
-        pass
     if ext:
         fn += "." + ext
     return os.path.join(imagedir, fn)
