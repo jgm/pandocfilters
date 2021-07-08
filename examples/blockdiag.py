@@ -33,8 +33,9 @@ def blockdiag(key, value, format, _):
             if not os.path.isfile(dest):
                 cmd = str(list(kw)[0])
 
-                txt = code.encode(sys.getfilesystemencoding())
-                if not txt.startswith(cmd):
+                encoding = sys.getfilesystemencoding()
+                txt = code.encode(encoding)
+                if not txt.startswith(cmd.encode(encoding)):
                     txt = cmd + "{\n" + txt + "\n}\n"
                 with open(src, "w") as f:
                     f.write(txt)
