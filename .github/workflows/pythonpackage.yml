@@ -56,8 +56,9 @@ jobs:
     - uses: xu-cheng/texlive-action/full@v1
       name: Set up texlive
     - name: Install dependencies—pip
+      # pygraphviz for graphviz.py
       run: |
-        python -m pip install -U setuptools
+        python -m pip install -U setuptools pygraphviz
         python -m pip install .
     - name: Install dependencies—pandoc
       run: |
