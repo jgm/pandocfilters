@@ -1,6 +1,0 @@
-Notes on uploading this package to PyPI
-
-python setup.py sdist bdist_wheel
-twine upload dist/*
-
-See https://packaging.python.org/distributing/#uploading-your-project-to-pypi

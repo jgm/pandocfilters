@@ -1,0 +1,139 @@
+[build-system]
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "pandocfilters"
+version = "1.5.0"
+description = "Utilities for writing pandoc filters in python"
+license = "BSD-3-Clause"
+keywords = [
+    "pandoc",
+    "pandocfilters",
+    "markdown",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Text Processing :: Filters",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Utilities",
+]
+homepage = "https://github.com/jgm/pandocfilters"
+repository = "https://github.com/jgm/pandocfilters"
+documentation = "https://jgm.github.io/pandocfilters"
+authors = [
+    "John MacFarlane <fiddlosopher@gmail.com>",
+    "Kolen Cheung <christian.kolen@gmail.com>",
+]
+readme = "README.rst"
+packages = [
+    { include = "pandocfilters", from = "src" },
+]
+include = [
+    'README.rst',
+    'CHANGELOG.md',
+    'LICENSE',
+]
+
+[tool.poetry.dependencies]
+python = ">=3.6"
+
+# extras
+coloredlogs = {optional = true, version = ">=14,<16"}
+
+# tests
+coverage = {optional = true, version = "*"}
+coveralls = {optional = true, version = "*"}
+pytest = {optional = true, version = "*"}
+pytest-cov = {optional = true, version = "*"}
+
+# docs: sync this with tox.testenv.docs below
+sphinx = {optional = true, version = ">=3,<5"}
+sphinx-bootstrap-theme = {optional = true, version = "*"}
+sphinxcontrib-apidoc = {optional = true, version = "*"}
+
+[tool.poetry.dev-dependencies]
+ipykernel = "*"
+mypy = "*"
+bandit = "*"
+bump2version = "*"
+
+[tool.poetry.extras]
+extras = [
+    "coloredlogs",
+]
+tests = [
+    "coverage",
+    "coveralls",
+    "pytest",
+    "pytest-cov",
+]
+docs = [
+    "sphinx",
+    "sphinx-bootstrap-theme",
+    "sphinxcontrib-apidoc",
+]
+
+[tool.coverage.paths]
+source = [
+    'src',
+    '*/site-packages',
+]
+
+[tool.coverage.run]
+branch = true
+source = [
+    'src',
+    'tests',
+]
+relative_files = true
+
+[tool.coverage.report]
+show_missing = true
+precision = 2
+
+[tool.pytest.ini_options]
+
+python_files = [
+    'test_*.py',
+    '*_test.py',
+    'tests.py',
+]
+
+addopts = [
+    '-ra',
+    '--strict-markers',
+    '--doctest-modules',
+    '--doctest-glob=\*.rst',
+    '--tb=short',
+]
+
+testpaths = [
+    'tests',
+]
+
+[tool.isort]
+line_length = 120
+known_first_party = 'pandocfilters'
+default_section = 'THIRDPARTY'
+forced_separate = 'tests'
+skip = [
+    '.tox',
+    '.eggs',
+    'ci/templates',
+    'build',
+    'dist',
+]
