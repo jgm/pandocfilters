@@ -52,7 +52,6 @@ def get_filename4code(module, content, ext=None):
         sys.stderr.write('Created directory ' + imagedir + '\n')
     except OSError:
         sys.stderr.write('Could not create directory "' + imagedir + '"\n')
-        pass
     if ext:
         fn += "." + ext
     return os.path.join(imagedir, fn)
