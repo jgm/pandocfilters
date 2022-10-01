@@ -265,10 +265,12 @@ def elt(eltType, numargs):
         return {'t': eltType, 'c': xs}
     return fun
 
+
 # Constructors for block elements
 
 Plain = elt('Plain', 1)
 Para = elt('Para', 1)
+LineBlock = elt('LineBlock', 1)
 CodeBlock = elt('CodeBlock', 2)
 RawBlock = elt('RawBlock', 2)
 BlockQuote = elt('BlockQuote', 1)
@@ -281,10 +283,12 @@ Table = elt('Table', 5)
 Div = elt('Div', 2)
 Null = elt('Null', 0)
 
+
 # Constructors for inline elements
 
 Str = elt('Str', 1)
 Emph = elt('Emph', 1)
+Underline = elt('Underline', 1)
 Strong = elt('Strong', 1)
 Strikeout = elt('Strikeout', 1)
 Superscript = elt('Superscript', 1)
@@ -294,11 +298,12 @@ Quoted = elt('Quoted', 2)
 Cite = elt('Cite', 2)
 Code = elt('Code', 2)
 Space = elt('Space', 0)
+SoftBreak = elt('SoftBreak', 0)
 LineBreak = elt('LineBreak', 0)
 Math = elt('Math', 2)
 RawInline = elt('RawInline', 2)
 Link = elt('Link', 3)
 Image = elt('Image', 3)
 Note = elt('Note', 1)
-SoftBreak = elt('SoftBreak', 0)
 Span = elt('Span', 2)
+
