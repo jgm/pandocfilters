@@ -12,6 +12,7 @@ import hashlib
 import io
 import json
 import os
+import os.path
 import sys
 import atexit
 import shutil
@@ -47,11 +48,14 @@ def get_filename4code(module, content, ext=None):
     else:
         imagedir = module + "-images"
     fn = hashlib.sha1(content.encode(sys.getfilesystemencoding())).hexdigest()
-    try:
-        os.mkdir(imagedir)
-        sys.stderr.write('Created directory ' + imagedir + '\n')
-    except OSError:
-        sys.stderr.write('Could not create directory "' + imagedir + '"\n')
+    if os.path.exists(imagedir):
+        if not os.path.isdir(imagedir):
+            print(imagedir + " exists but it's not a directory", file=sys.stderr)
+    else:
+        try:
+            os.mkdir(imagedir)
+        except OSError:
+            print("Could not create directory " + imagedir, file=sys.stderr)
     if ext:
         fn += "." + ext
     return os.path.join(imagedir, fn)
