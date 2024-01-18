@@ -16,13 +16,16 @@ jobs:
       matrix:
         # see setup.py for supported versions
         python-version:
-          - 2.7
+          # - 2.7 # python 2 is no longer provided
           - 3.5
           - 3.6
           - 3.7
           - 3.8
           - 3.9
-          - pypy2
+          - 3.10
+          - 3.11
+          - 3.12
+          # - pypy2
           - pypy3
         # should test sparingly across API breaking boundaries
         pandoc-version:
