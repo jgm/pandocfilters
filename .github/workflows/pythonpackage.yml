@@ -9,24 +9,19 @@ on:
 
 jobs:
   test:
-
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest]
         # see setup.py for supported versions
         python-version:
-          # - 2.7 # python 2 is no longer provided
-          - 3.5
-          - 3.6
           - 3.7
           - 3.8
           - 3.9
-          - 3.10
+          - "3.10"
           - 3.11
           - 3.12
-          # - pypy2
-          - pypy3
+          - pypy3.10
         # should test sparingly across API breaking boundaries
         pandoc-version:
           # - 2.0.6
@@ -49,11 +44,19 @@ jobs:
           - 2.11.4
           # - 2.12
           - latest
+        include:
+          - os: ubuntu-20.04
+            python-version: 3.5
+            pandoc-version: latest
+          - os: ubuntu-20.04
+            python-version: 3.6
+            pandoc-version: latest
 
+    runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install examples' dependencies
@@ -63,12 +66,22 @@ jobs:
       run: |
         python -m pip install -U setuptools pygraphviz
         python -m pip install .
+    - name: set pandoc release version
+      run: |
+          version=$([[ "${{ matrix.pandoc-version }}" == "latest" ]] && echo "latest" || echo "tags/${{ matrix.pandoc-version }}")
+          echo "PANDOC_VERSION=$version" >> $GITHUB_ENV
+    - name: Fetch dependencies—pandoc
+      uses: dsaltares/fetch-gh-release-asset@master
+      with:
+        repo: "jgm/pandoc"
+        version: ${{ env.PANDOC_VERSION }}
+        file: ".*-amd64\\.deb"
+        target: "deb/"
+        regex: true
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Install dependencies—pandoc
       run: |
         # pandoc
-        [[ ${{ matrix.pandoc-version }} == "latest" ]] && url="https://github.com/jgm/pandoc/releases/latest" || url="https://github.com/jgm/pandoc/releases/tag/${{ matrix.pandoc-version }}"
-        downloadUrl="https://github.com$(curl -L $url | grep -o '/jgm/pandoc/releases/download/.*-amd64\.deb')"
-        wget --quiet "$downloadUrl"
-        sudo dpkg -i "${downloadUrl##*/}"
+        sudo dpkg -i deb/*.deb
     - name: Tests
       run: cd examples; make -j4
