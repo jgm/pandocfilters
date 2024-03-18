@@ -1,5 +1,9 @@
+import sys
 import setuptools
-from distutils.core import setup
+if sys.version_info.major > 3 and sys.version_info.minor >= 12:
+    from setuptools import setup
+else:
+    from distutils.core import setup
 import os
 
 
