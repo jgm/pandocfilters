@@ -47,11 +47,12 @@ def get_filename4code(module, content, ext=None):
     else:
         imagedir = module + "-images"
     fn = hashlib.sha1(content.encode(sys.getfilesystemencoding())).hexdigest()
-    try:
-        os.makedirs(imagedir, exist_ok=True)
-        sys.stderr.write('Created directory ' + imagedir + '\n')
-    except OSError:
-        sys.stderr.write('Could not create directory "' + imagedir + '"\n')
+    if not os.path.isdir(imagedir):
+        try:
+            os.makedirs(imagedir)
+            sys.stderr.write('Created directory ' + imagedir + '\n')
+        except OSError:
+            sys.stderr.write('Could not create directory "' + imagedir + '"\n')
     if ext:
         fn += "." + ext
     return os.path.join(imagedir, fn)
