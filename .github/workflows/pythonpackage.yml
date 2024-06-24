@@ -44,10 +44,13 @@ jobs:
           # - 2.11.4
           # - 2.12
           - latest
+        # The empty env for all python but 3.5
+        pip-trusted-host: [""]
         include:
           - os: ubuntu-20.04
             python-version: 3.5
             pandoc-version: latest
+            pip-trusted-host: "pypi.python.org pypi.org files.pythonhosted.org"
           - os: ubuntu-20.04
             python-version: 3.6
             pandoc-version: latest
@@ -59,6 +62,8 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+      env:
+        PIP_TRUSTED_HOST: ${{ matrix.pip-trusted-host }}
     - name: Install examples' dependencies
       run: sudo apt update && sudo apt install abcm2ps graphviz graphviz-dev texlive-full
     - name: Install dependencies—pip
