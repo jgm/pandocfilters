@@ -212,7 +212,7 @@ def applyJSONFilters(actions, source, format=""):
     altered = doc
     for action in actions:
         altered = walk(altered, action, format, meta)
-
+    altered['meta'] = meta
     return json.dumps(altered)
 
 
