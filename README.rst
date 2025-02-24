@@ -231,7 +231,9 @@ files. This directory doesn't get removed as it can be used as a cache so that
 later pandoc runs don't have to recreate files if they already exist. The
 directory is generated in the current directory.
 
-If you prefer to have a clean directory after running pandoc filters, you
-can set an environment variable ``PANDOCFILTER_CLEANUP`` to any non-empty value such as `1`
-which forces the code to create a temporary directory that will be removed
-by the end of execution.
+To specify, another location to the images directory. Use the environment variable
+``PANDOCFILTER_BUILD_FOLDER`` to specify the directory.
+
+.. note::
+  When using the environment variable, pandocfilters will not create the directory
+  automatically if it does not exist.
