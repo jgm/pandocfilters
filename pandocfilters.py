@@ -13,9 +13,6 @@ import io
 import json
 import os
 import sys
-import atexit
-import shutil
-import tempfile
 
 
 # some utility-functions: make it easier to create your own filters
@@ -41,11 +38,17 @@ def get_filename4code(module, content, ext=None):
     Example:
         filename = get_filename4code("myfilter", code)
     """
-    if os.getenv('PANDOCFILTER_CLEANUP'):
-        imagedir = tempfile.mkdtemp(prefix=module)
-        atexit.register(lambda: shutil.rmtree(imagedir))
+
+    imagedir = os.getenv("PANDOCFILTER_BUILD_DIR")
+
+    if imagedir:
+        if not os.path.isdir(imagedir):
+            sys.stderr.write(f"PANDOCFILTER_BUILD_DIR [{imagedir}] does not exist. Using"
+                             f"default output directory instead.\n")
+            imagedir = module + "-images"
     else:
         imagedir = module + "-images"
+
     fn = hashlib.sha1(content.encode(sys.getfilesystemencoding())).hexdigest()
     if not os.path.isdir(imagedir):
         try:
