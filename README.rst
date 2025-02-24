@@ -232,7 +232,7 @@ later pandoc runs don't have to recreate files if they already exist. The
 directory is generated in the current directory.
 
 To specify, another location to the images directory. Use the environment variable
-``PANDOCFILTER_BUILD_FOLDER`` to specify the directory.
+``PANDOCFILTER_BUILD_DIR`` to specify the directory.
 
 .. note::
   When using the environment variable, pandocfilters will not create the directory
