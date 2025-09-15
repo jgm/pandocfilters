@@ -25,8 +25,16 @@ import os
 import sys
 from subprocess import call
 
-from pandocfilters import toJSONFilter, Para, Image, get_filename4code, get_caption, get_extension
-
+from pandocfilters import (
+    Figure,
+    Image,
+    Para,
+    Plain,
+    get_caption,
+    get_extension,
+    get_filename4code,
+    toJSONFilter,
+)
 
 def plantuml(key, value, format, _):
     if key == 'CodeBlock':
@@ -88,8 +96,18 @@ def plantuml(key, value, format, _):
                         'Used jar file ' + os.environ.get("PANDOCFILTER_plantuml_jar_file") + '\n')
                 sys.stderr.write('Created image ' + dest + '\n')
 
-            return Para([Image([ident, [], keyvals], caption, [dest, typef])])
-
+            if caption:
+                return Figure(
+                    ["",[],[]],
+                    [None,[Para(caption)]],
+                    [Plain(
+                        [Image([ident, [], keyvals], caption, [dest, typef])]
+                    )]
+                )
+            else:
+                return Para(
+                    [Image([ident, [], keyvals], caption, [dest, typef])]
+                )
 
 if __name__ == "__main__":
     toJSONFilter(plantuml)

@@ -281,6 +281,7 @@ HorizontalRule = elt('HorizontalRule', 0)
 Table = elt('Table', 5)
 Div = elt('Div', 2)
 Null = elt('Null', 0)
+Figure = elt('Figure', 3)
 
 # Constructors for inline elements
 
