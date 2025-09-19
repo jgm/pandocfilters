@@ -101,7 +101,7 @@ def get_extension(format, default, **alternates):
 # end of utilities
 
 
-def walk(x, action, format, meta):
+def walk(x, action, format, meta, recurseOnNewNodes = True):
     """Walk a tree, applying an action to every object.
     Returns a modified tree.  An action is a function of the form
     `action(key, value, format, meta)`, where:
@@ -129,27 +129,33 @@ def walk(x, action, format, meta):
                 res = action(item['t'],
                              item['c'] if 'c' in item else None, format, meta)
                 if res is None:
-                    array.append(walk(item, action, format, meta))
+                    array.append(walk(item, action, format, meta, recurseOnNewNodes))
                 elif isinstance(res, list):
                     for z in res:
-                        array.append(walk(z, action, format, meta))
+                        if recurseOnNewNodes: 
+                            array.append(walk(z, action, format, meta, recurseOnNewNodes))
+                        else:
+                            array.append(z)
                 else:
-                    array.append(walk(res, action, format, meta))
+                    if recurseOnNewNodes: 
+                        array.append(walk(res, action, format, meta, recurseOnNewNodes))
+                    else:
+                        array.append(res)
             else:
-                array.append(walk(item, action, format, meta))
+                array.append(walk(item, action, format, meta, recurseOnNewNodes))
         return array
     elif isinstance(x, dict):
-        return {k: walk(v, action, format, meta) for k, v in x.items()}
+        return {k: walk(v, action, format, meta, recurseOnNewNodes) for k, v in x.items()}
     else:
         return x
 
-def toJSONFilter(action):
+def toJSONFilter(action, recurseOnNewNodes = True):
     """Like `toJSONFilters`, but takes a single action as argument.
     """
-    toJSONFilters([action])
+    toJSONFilters([action], recurseOnNewNodes)
 
 
-def toJSONFilters(actions):
+def toJSONFilters(actions, recurseOnNewNodes):
     """Generate a JSON-to-JSON filter from stdin to stdout
 
     The filter:
@@ -180,9 +186,9 @@ def toJSONFilters(actions):
     else:
         format = ""
 
-    sys.stdout.write(applyJSONFilters(actions, source, format))
+    sys.stdout.write(applyJSONFilters(actions, source, recurseOnNewNodes, format))
 
-def applyJSONFilters(actions, source, format=""):
+def applyJSONFilters(actions, source, recurseOnNewNodes, format=""):
     """Walk through JSON structure and apply filters
 
     This:
@@ -211,7 +217,7 @@ def applyJSONFilters(actions, source, format=""):
         meta = {}
     altered = doc
     for action in actions:
-        altered = walk(altered, action, format, meta)
+        altered = walk(altered, action, format, meta, recurseOnNewNodes)
 
     return json.dumps(altered)
 
